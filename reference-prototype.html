@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workplace Support Passport</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:    #1a6b6b;
+    --teal-lt: #e6f2f2;
+    --teal-mid:#2d9191;
+    --ink:     #1a1a2e;
+    --muted:   #5a5a72;
+    --border:  #d0dede;
+    --bg:      #f7fafa;
+    --white:   #ffffff;
+    --amber:   #c97c2a;
+    --amber-lt:#fdf3e7;
+    --red:     #c0392b;
+    --radius:  12px;
+    --shadow:  0 2px 16px rgba(26,107,107,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--bg);
+    min-height: 100vh;
+  }
+
+  /* ---- HEADER ---- */
+  .site-header {
+    background: var(--teal);
+    padding: 28px 24px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 32px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .site-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--white);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .site-header p {
+    color: rgba(255,255,255,0.82);
+    font-size: 0.95rem;
+    font-weight: 300;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* ---- LAYOUT ---- */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* ---- NOTICE BOX ---- */
+  .notice {
+    background: var(--teal-lt);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    font-size: 0.9rem;
+    color: var(--teal);
+  }
+  .notice strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+
+  /* ---- PROGRESS BAR ---- */
+  .progress-wrap {
+    margin-bottom: 32px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* ---- SECTION CARD ---- */
+  .section-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 28px 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    animation: fadeSlide 0.3s ease both;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .section-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--teal);
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .section-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ---- FIELD ---- */
+  .field {
+    margin-bottom: 22px;
+  }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .optional-tag {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: 6px;
+    background: #f0f0f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .field-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(26,107,107,0.12);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ---- CHECKBOX + RADIO GROUPS ---- */
+  .check-group, .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .check-item, .radio-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+  .check-item:hover, .radio-item:hover {
+    border-color: var(--teal-mid);
+    background: var(--teal-lt);
+  }
+  .check-item input, .radio-item input {
+    width: 18px; height: 18px;
+    min-width: 18px;
+    margin-top: 1px;
+    accent-color: var(--teal);
+    cursor: pointer;
+  }
+  .check-item.checked, .radio-item.selected {
+    border-color: var(--teal);
+    background: var(--teal-lt);
+  }
+
+  /* ---- NONE OF ABOVE ---- */
+  .none-item {
+    border-color: transparent;
+    background: #f7f7fa;
+    color: var(--muted);
+  }
+
+  /* ---- CONDITIONAL REVEAL ---- */
+  .conditional {
+    display: none;
+    margin-top: 12px;
+    padding: 16px;
+    background: var(--teal-lt);
+    border-radius: 8px;
+    border: 1px dashed var(--teal-mid);
+  }
+  .conditional.visible { display: block; }
+  .conditional label { color: var(--teal); }
+
+  /* ---- NAVIGATION ---- */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 12px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--teal);
+    color: white;
+  }
+  .btn-primary:hover { background: #145555; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--teal);
+    border-color: var(--teal);
+  }
+  .btn-secondary:hover { background: var(--teal-lt); }
+  .btn-amber {
+    background: var(--amber);
+    color: white;
+    width: 100%;
+    justify-content: center;
+    padding: 15px;
+    font-size: 1rem;
+  }
+  .btn-amber:hover { background: #b06820; }
+
+  /* ---- RESULTS ---- */
+  #form-panel.hidden { display: none; }
+
+  .results-header {
+    text-align: center;
+    padding: 32px 24px;
+    background: var(--teal);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    color: white;
+  }
+  .results-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  .results-header p {
+    opacity: 0.85;
+    font-size: 0.9rem;
+  }
+
+  .results-section {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .results-section-head {
+    background: var(--teal-lt);
+    padding: 14px 20px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--teal);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .results-section-body {
+    padding: 16px 20px;
+  }
+  .result-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f5;
+    font-size: 0.88rem;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-q { color: var(--muted); font-style: italic; }
+  .result-a { color: var(--ink); font-weight: 500; }
+  .result-empty { color: #aaa; font-style: italic; font-size: 0.85rem; }
+
+  .print-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  @media print {
+    .nav-row, .print-row, .progress-wrap, .notice, .site-header::after { display: none; }
+    body { background: white; }
+    .section-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  }
+  @media (max-width: 480px) {
+    .section-card { padding: 20px 16px; }
+    .nav-row { flex-direction: column-reverse; }
+    .btn { width: 100%; justify-content: center; }
+  }
+
+  /* Step visibility */
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .step-count {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: right;
+    margin-bottom: 8px;
+  }
+
+  /* ---- CONSENT GRID (Step 9) ---- */
+  .consent-intro {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  .consent-quickrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .chip-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 7px 13px;
+    border-radius: 99px;
+    border: 1.5px solid var(--teal-mid);
+    background: var(--white);
+    color: var(--teal);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .chip-btn:hover { background: var(--teal-lt); }
+  .chip-btn.clear { border-color: var(--border); color: var(--muted); }
+
+  .consent-table-wrap { overflow-x: auto; margin-bottom: 8px; -webkit-overflow-scrolling: touch; }
+  .consent-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 480px;
+    font-size: 0.85rem;
+  }
+  .consent-table th, .consent-table td {
+    border: 1px solid var(--border);
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .consent-table th {
+    background: var(--teal-lt);
+    color: var(--teal);
+    font-weight: 600;
+    font-size: 0.78rem;
+  }
+  .consent-table td:first-child, .consent-table th:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .consent-table input[type="checkbox"] {
+    width: 19px; height: 19px;
+    accent-color: var(--teal);
+    cursor: pointer;
+  }
+  .consent-hint-row td {
+    font-size: 0.76rem;
+    color: var(--muted);
+    font-style: italic;
+    text-align: left !important;
+    border: none;
+    padding-top: 2px;
+    padding-bottom: 14px;
+  }
+
+  /* ---- REPORT SELECTOR ---- */
+  #report-selector-panel { display: none; }
+  #report-selector-panel.visible { display: block; }
+  .report-selector-intro {
+    text-align: center;
+    padding: 32px 24px 8px;
+  }
+  .report-selector-intro h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .report-selector-intro p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .report-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .report-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .report-card-icon {
+    font-size: 1.7rem;
+    flex-shrink: 0;
+  }
+  .report-card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--teal);
+  }
+  .report-card-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+    line-height: 1.55;
+  }
+
+  .send-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f5;
+  }
+  .send-row:last-child { border-bottom: none; }
+  .send-row-label {
+    flex: 1 1 auto;
+    font-size: 0.88rem;
+    color: var(--ink);
+    min-width: 160px;
+  }
+  .send-row-noemail {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.82rem;
+  }
+  .send-status {
+    flex-basis: 100%;
+    font-size: 0.8rem;
+    color: var(--teal);
+    font-style: italic;
+  }
+  .btn-small {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+  .btn-small:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ---- FULL REPORT PANELS ---- */
+  .report-panel { display: none; }
+  .report-panel.visible { display: block; }
+  .report-nav-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .report-framework-note {
+    background: var(--amber-lt);
+    border-left: 4px solid var(--amber);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: #8a5a1e;
+    line-height: 1.55;
+  }
+  .report-framework-note strong { color: var(--amber); }
+  .report-framework-note.policy {
+    background: var(--teal-lt);
+    border-left-color: var(--teal);
+    color: #145555;
+  }
+
+  .eees-policy-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: #f7f7fa;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 10px 0 14px;
+    line-height: 1.55;
+  }
+
+  .eees-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .eees-block-head {
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: white;
+  }
+  .eees-block-head.ef { background: #2d6e8e; }
+  .eees-block-head.er { background: #a04b7c; }
+  .eees-block-head.env { background: var(--teal); }
+  .eees-block-head.sen { background: #7a6b2d; }
+  .eees-block-body { padding: 6px 20px 16px; }
+
+  .eees-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f5;
+  }
+  .eees-item:last-child { border-bottom: none; }
+  .eees-item-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--teal);
+    background: var(--teal-lt);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .eees-item-reported {
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .eees-item-meaning {
+    font-size: 0.87rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .eees-item-sublabel {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--teal);
+    margin: 8px 0 4px;
+  }
+  .eees-sublist {
+    list-style: none;
+    margin: 0 0 4px;
+  }
+  .eees-sublist li {
+    font-size: 0.86rem;
+    color: var(--ink);
+    padding: 3px 0 3px 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .eees-sublist li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--teal-mid);
+  }
+
+  .quote-box {
+    background: var(--teal-lt);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 0.87rem;
+    color: var(--ink);
+    font-style: italic;
+  }
+  .quote-box-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--teal);
+    font-style: normal;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .quote-prompts {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--teal-mid);
+    font-style: normal;
+  }
+  .quote-prompts-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .quote-prompts-list {
+    list-style: none;
+    margin: 0;
+  }
+  .quote-prompts-list li {
+    font-size: 0.84rem;
+    color: var(--ink);
+    padding: 2px 0 2px 16px;
+    position: relative;
+  }
+  .quote-prompts-list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--teal-mid);
+  }
+
+  .priority-callout {
+    background: var(--teal);
+    color: white;
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .priority-callout-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+  .priority-callout p { white-space: pre-line; font-size: 0.95rem; line-height: 1.6; }
+
+  .flag-list {
+    list-style: none;
+  }
+  .flag-list li {
+    padding: 10px 14px;
+    background: var(--amber-lt);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    color: #6b4a17;
+  }
+
+  .not-shared-note {
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-style: italic;
+    padding: 14px 18px;
+    background: #f7f7fa;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .sharing-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .sharing-summary-table th, .sharing-summary-table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #f0f0f5;
+    text-align: left;
+  }
+  .sharing-summary-table th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .recipient-pill {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 99px;
+    background: var(--teal-lt);
+    color: var(--teal);
+    margin: 2px 4px 2px 0;
+  }
+  .recipient-pill.none { background: #f0f0f5; color: #aaa; font-style: italic; }
+
+  @media print {
+    .report-nav-row { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .consent-table { font-size: 0.78rem; }
+    .consent-table th, .consent-table td { padding: 8px 5px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Workplace Support Passport</h1>
+  <p>A practical tool to help you identify, articulate and record what you need to work at your best.</p>
+</header>
+
+<div class="container">
+
+  <div id="form-panel">
+
+    <div class="notice">
+      <strong>Your passport, your information</strong>
+      You do not need to disclose a diagnosis or medical condition at any point. This passport focuses on what helps you work well. You choose what to share, with whom, and when.
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">Section 1 of 9</span>
+        <span id="progress-pct">11%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:11%"></div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 1: ABOUT YOU
+    ====================================================== -->
+    <div class="step active" data-step="1">
+      <div class="step-count">Section 1 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <div>
+            <div class="section-title">About You</div>
+            <div class="section-desc">Basic details to personalise your passport. All fields are optional.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-name">Your name <span class="optional-tag">optional</span></label>
+          <input type="text" id="f-name" placeholder="First name or preferred name">
+        </div>
+        <div class="field">
+          <label for="f-email">Your email <span class="optional-tag">optional, only needed to email you a copy</span></label>
+          <input type="email" id="f-email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="f-role">Your job title or role <span class="optional-tag">optional</span></label>
+          <input type="text" id="f-role" placeholder="e.g. Project Manager, Support Worker">
+        </div>
+        <div class="field">
+          <label for="f-org">Organisation <span class="optional-tag">optional</span></label>
+          <input type="text" id="f-org" placeholder="e.g. NHS, Local Authority, or leave blank">
+        </div>
+        <div class="field">
+          <label for="f-date">Date completed <span class="optional-tag">optional</span></label>
+          <input type="text" id="f-date" placeholder="e.g. May 2026" onfocus="if(!this.value)this.value=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'})">
+        </div>
+        <div class="field">
+          <label>Do you want to include contact details for a named person who can discuss your needs? <span class="optional-tag">optional</span></label>
+          <div class="field-hint">This could be a GP, occupational therapist, workplace assessor, or anyone you choose.</div>
+          <input type="text" id="f-contact-name" placeholder="Contact name and role (optional)">
+          <div style="height:8px"></div>
+          <input type="text" id="f-contact-detail" placeholder="Phone or email (optional)">
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 2: WORKING ENVIRONMENT
+    ====================================================== -->
+    <div class="step" data-step="2">
+      <div class="step-count">Section 2 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🏢</div>
+          <div>
+            <div class="section-title">Working Environment</div>
+            <div class="section-desc">Where and how your physical workspace affects your ability to work well.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Where do you work best? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group" id="work-location-group">
+            <label class="check-item"><input type="checkbox" name="work-location" value="Quiet private space"> Quiet, private space with minimal interruptions</label>
+            <label class="check-item"><input type="checkbox" name="work-location" value="Open plan but with noise management"> Open plan but with noise management (e.g. headphones, screens)</label>
+            <label class="check-item"><input type="checkbox" name="work-location" value="Home working"> Home working, at least part of the time</label>
+            <label class="check-item"><input type="checkbox" name="work-location" value="Fixed consistent location"> Fixed, consistent location rather than hot-desking</label>
+            <label class="check-item"><input type="checkbox" name="work-location" value="Flexible/varied locations"> Flexible or varied locations suit me well</label>
+            <label class="check-item none-item"><input type="checkbox" name="work-location" value="No preference"> No strong preference</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Are there physical or sensory aspects of your workspace that affect you? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Lighting - natural or adjustable"> Lighting: I need natural light or adjustable levels</label>
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Lighting - avoid fluorescent"> Lighting: fluorescent or bright overhead lights are difficult</label>
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Temperature sensitivity"> Temperature: I am sensitive to heat or cold</label>
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Background noise"> Background noise significantly affects my concentration</label>
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Scent sensitivity"> Strong scents or fragrances affect me</label>
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Crowded or busy spaces"> Crowded or very busy spaces are difficult to manage</label>
+            <label class="check-item"><input type="checkbox" name="env-sensory" value="Visual clutter"> Visual clutter or disorganised environments affect my focus</label>
+            <label class="check-item none-item"><input type="checkbox" name="env-sensory" value="None of these"> None of these apply</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="env-other">Anything else about your working environment you would like to note? <span class="optional-tag">optional</span></label>
+          <textarea id="env-other" placeholder="e.g. I need to be near accessible toilet facilities, I find shared kitchens difficult..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 3: EQUIPMENT AND TECHNOLOGY
+    ====================================================== -->
+    <div class="step" data-step="3">
+      <div class="step-count">Section 3 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">💻</div>
+          <div>
+            <div class="section-title">Equipment and Technology</div>
+            <div class="section-desc">Tools, software and physical equipment that help you perform at your best.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Do you currently use, or think you would benefit from, any specialist equipment? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="equipment" value="Ergonomic seating or adjustable desk"> Ergonomic seating or a height-adjustable desk</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Specialist keyboard or mouse"> Specialist keyboard, mouse or input device</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Noise cancelling headphones"> Noise-cancelling headphones</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Larger or additional screens"> Larger monitor or dual screens</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Screen magnification"> Screen magnification or high-contrast display settings</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Hearing aids or loop system"> Hearing aids or access to a hearing loop system</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Mobility aids at workstation"> Mobility aids or adaptations at my workstation</label>
+            <label class="check-item"><input type="checkbox" name="equipment" value="Fidget or sensory tools"> Fidget tools or sensory regulation items</label>
+            <label class="check-item none-item"><input type="checkbox" name="equipment" value="None currently"> None currently</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Do you use, or would you benefit from, any assistive technology or specialist software? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="software" value="Text-to-speech (e.g. Read&Write)"> Text-to-speech software (e.g. Read&amp;Write, NaturalReader)</label>
+            <label class="check-item"><input type="checkbox" name="software" value="Speech-to-text (e.g. Dragon)"> Speech-to-text / dictation software (e.g. Dragon, voice typing)</label>
+            <label class="check-item"><input type="checkbox" name="software" value="Screen reader (e.g. JAWS, NVDA)"> Screen reader (e.g. JAWS, NVDA)</label>
+            <label class="check-item"><input type="checkbox" name="software" value="Mind mapping tools"> Mind mapping or visual planning tools</label>
+            <label class="check-item"><input type="checkbox" name="software" value="Task management / reminder apps"> Task management or reminder apps</label>
+            <label class="check-item"><input type="checkbox" name="software" value="Magnification software"> Screen magnification software</label>
+            <label class="check-item"><input type="checkbox" name="software" value="Colour overlay / tinted reading tools"> Colour overlay or tinted screen tools</label>
+            <label class="check-item"><input type="checkbox" name="software" value="AI writing or summarising tools"> AI writing or summarising tools</label>
+            <label class="check-item none-item"><input type="checkbox" name="software" value="None currently"> None currently</label>
+          </div>
+          <div class="conditional" id="cond-software-info">
+            <label>Would you like information about what is available and how it might help? <span class="optional-tag">optional</span></label>
+            <div class="radio-group">
+              <label class="radio-item"><input type="radio" name="software-info" value="Yes"> Yes please</label>
+              <label class="radio-item"><input type="radio" name="software-info" value="No"> No, I am already aware</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="equipment-other">Any other equipment or technology you find helpful or would like to try? <span class="optional-tag">optional</span></label>
+          <textarea id="equipment-other" placeholder="Describe anything not covered above..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 4: GETTING TO WORK
+    ====================================================== -->
+    <div class="step" data-step="4">
+      <div class="step-count">Section 4 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🚌</div>
+          <div>
+            <div class="section-title">Getting To and From Work</div>
+            <div class="section-desc">Travel and access to the workplace.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Do you need any support with getting to or from work? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="travel" value="Reserved or accessible parking"> Reserved or accessible parking close to the building</label>
+            <label class="check-item"><input type="checkbox" name="travel" value="Flexible start or finish times"> Flexible start or finish times (e.g. to avoid rush hour)</label>
+            <label class="check-item"><input type="checkbox" name="travel" value="Taxi or funded travel support"> Taxi or funded travel support (potentially via Access to Work)</label>
+            <label class="check-item"><input type="checkbox" name="travel" value="Vehicle adaptations"> Adaptations to a vehicle</label>
+            <label class="check-item"><input type="checkbox" name="travel" value="Travel buddy or support"> A travel companion or support when commuting</label>
+            <label class="check-item"><input type="checkbox" name="travel" value="Remote working to reduce travel"> Working remotely to reduce or remove commuting</label>
+            <label class="check-item none-item"><input type="checkbox" name="travel" value="No travel support needed"> No travel support needed</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Do you need any support accessing the building or site? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="access" value="Step-free or lift access"> Step-free access or lift availability</label>
+            <label class="check-item"><input type="checkbox" name="access" value="Accessible toilets nearby"> Accessible toilets close to my workspace</label>
+            <label class="check-item"><input type="checkbox" name="access" value="Clear signage"> Clear signage throughout the building</label>
+            <label class="check-item"><input type="checkbox" name="access" value="Quiet or less busy entrance"> A quieter or less busy entrance route</label>
+            <label class="check-item"><input type="checkbox" name="access" value="Widened doors or adapted spaces"> Widened doors or physically adapted spaces</label>
+            <label class="check-item none-item"><input type="checkbox" name="access" value="No access adjustments needed"> No access adjustments needed</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="travel-other">Anything else about travel or site access you would like to note? <span class="optional-tag">optional</span></label>
+          <textarea id="travel-other" placeholder="Anything not listed above..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 5: COMMUNICATION AND INTERACTION
+    ====================================================== -->
+    <div class="step" data-step="5">
+      <div class="step-count">Section 5 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">💬</div>
+          <div>
+            <div class="section-title">Communication and Interaction</div>
+            <div class="section-desc">How you communicate most effectively and what helps conversations and meetings work well for you.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>How do you prefer to receive information? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Written instructions or summaries"> Written instructions or summaries after verbal discussions</label>
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Verbal explanation first, then written"> Verbal explanation first, followed by written confirmation</label>
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Bullet points and short paragraphs"> Information broken into bullet points or short paragraphs</label>
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Visual diagrams or flowcharts"> Visual diagrams, flowcharts or mind maps</label>
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Time to read/process before discussing"> Time to read and process information before a discussion</label>
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Agenda in advance for meetings"> An agenda in advance before meetings</label>
+            <label class="check-item"><input type="checkbox" name="info-receive" value="Repeated or summarised at end"> Key points repeated or summarised at the end</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>How do you communicate most effectively? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="comm-style" value="One to one rather than groups"> One-to-one conversations rather than group settings</label>
+            <label class="check-item"><input type="checkbox" name="comm-style" value="Written over verbal when possible"> Written communication (email, message) over verbal where possible</label>
+            <label class="check-item"><input type="checkbox" name="comm-style" value="Extra processing time in conversations"> Extra time to process and formulate responses in conversation</label>
+            <label class="check-item"><input type="checkbox" name="comm-style" value="Direct and literal communication"> Direct, literal communication (I can miss implied meaning)</label>
+            <label class="check-item"><input type="checkbox" name="comm-style" value="Structured meetings with clear purpose"> Structured meetings with a clear purpose and outcomes</label>
+            <label class="check-item"><input type="checkbox" name="comm-style" value="BSL interpreter or relay service"> British Sign Language interpreter or relay service</label>
+            <label class="check-item"><input type="checkbox" name="comm-style" value="Notetaker in meetings"> A notetaker present in meetings</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>At interviews or formal assessments, would you benefit from any of the following? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="interview" value="Questions provided in writing"> Questions provided in writing in advance or during the interview</label>
+            <label class="check-item"><input type="checkbox" name="interview" value="Extra time to answer"> Extra time to answer questions</label>
+            <label class="check-item"><input type="checkbox" name="interview" value="Prompts to expand or clarify"> Prompts to expand or clarify my answers</label>
+            <label class="check-item"><input type="checkbox" name="interview" value="Smaller panel"> A smaller interview panel</label>
+            <label class="check-item"><input type="checkbox" name="interview" value="Accessible format alternative"> An alternative format (e.g. task-based, portfolio review)</label>
+            <label class="check-item none-item"><input type="checkbox" name="interview" value="No interview adjustments"> No adjustments needed at interview</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="comm-other">Anything else about communication or interaction you would like to note? <span class="optional-tag">optional</span></label>
+          <textarea id="comm-other" placeholder="e.g. I find phone calls difficult and prefer email; I may need to take breaks during long meetings..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 6: PLANNING, ORGANISATION AND WORKLOAD
+    ====================================================== -->
+    <div class="step" data-step="6">
+      <div class="step-count">Section 6 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">📋</div>
+          <div>
+            <div class="section-title">Planning, Organisation and Workload</div>
+            <div class="section-desc">How you manage tasks, time and competing demands most effectively.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>What helps you manage your workload effectively? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="workload" value="Clear written task lists"> Clear written task lists with priorities ranked</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Deadlines broken into steps"> Deadlines broken into smaller steps with interim check-ins</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Protected time for focused work"> Protected time for deep, focused work with limited interruptions</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Regular check-ins with manager"> Regular brief check-ins with my manager for direction and feedback</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Consistent routines"> Consistent routines and predictable schedules</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Advance notice of changes"> Advance notice of changes to tasks, priorities or plans</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Reminders and prompts"> Reminders and prompts for appointments and deadlines</label>
+            <label class="check-item"><input type="checkbox" name="workload" value="Flexibility on how tasks are completed"> Flexibility in how tasks are completed, as long as outcomes are met</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Are there aspects of planning or organisation that are particularly difficult for you? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="exec-difficulty" value="Starting tasks"> Getting started on tasks, especially complex or unfamiliar ones</label>
+            <label class="check-item"><input type="checkbox" name="exec-difficulty" value="Switching between tasks"> Switching between tasks, especially when interrupted</label>
+            <label class="check-item"><input type="checkbox" name="exec-difficulty" value="Estimating time"> Estimating how long tasks will take</label>
+            <label class="check-item"><input type="checkbox" name="exec-difficulty" value="Managing multiple priorities"> Managing multiple competing priorities simultaneously</label>
+            <label class="check-item"><input type="checkbox" name="exec-difficulty" value="Remembering verbal instructions"> Remembering verbal instructions without a written record</label>
+            <label class="check-item"><input type="checkbox" name="exec-difficulty" value="Paperwork or admin tasks"> Paperwork or administrative tasks</label>
+            <label class="check-item none-item"><input type="checkbox" name="exec-difficulty" value="None of these"> None of these present significant difficulty</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="workload-other">Anything else about managing your workload you would like to note? <span class="optional-tag">optional</span></label>
+          <textarea id="workload-other" placeholder="e.g. I work better on tasks that allow deep focus; I struggle when expectations change without notice..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 7: WELLBEING AND IN-WORK SUPPORT
+    ====================================================== -->
+    <div class="step" data-step="7">
+      <div class="step-count">Section 7 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🌱</div>
+          <div>
+            <div class="section-title">Wellbeing and In-Work Support</div>
+            <div class="section-desc">What helps you manage your energy, wellbeing and resilience at work.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Do any of the following affect your experience at work? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="wellbeing" value="Managing energy and fatigue"> Managing energy levels or fatigue across the working day</label>
+            <label class="check-item"><input type="checkbox" name="wellbeing" value="Managing stress or anxiety"> Managing stress, anxiety or emotional overwhelm at work</label>
+            <label class="check-item"><input type="checkbox" name="wellbeing" value="Recovery time after demanding periods"> Need for recovery time after demanding meetings, tasks or interactions</label>
+            <label class="check-item"><input type="checkbox" name="wellbeing" value="Navigating workplace relationships"> Navigating workplace relationships or conflict</label>
+            <label class="check-item"><input type="checkbox" name="wellbeing" value="Managing the impact of medication or treatment"> Managing the effects of medication, treatment or appointments</label>
+            <label class="check-item"><input type="checkbox" name="wellbeing" value="Unpredictable symptoms or flare-ups"> Unpredictable symptoms or health fluctuations that vary day to day</label>
+            <label class="check-item none-item"><input type="checkbox" name="wellbeing" value="None of these"> None of these significantly affect my work</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>What in-work support would help you most? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="Regular structured check-ins"> Regular structured check-ins with my manager</label>
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="A named buddy or mentor at work"> A named buddy or peer mentor in the workplace</label>
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="Job coach or workplace assessor"> Access to a job coach or workplace needs assessor</label>
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="Occupational health referral"> A referral to occupational health for assessment or advice</label>
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="Access to Work support"> Application support for Access to Work funding</label>
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="Flexibility for appointments"> Flexibility to attend medical or therapeutic appointments</label>
+            <label class="check-item"><input type="checkbox" name="in-work-support" value="Mental health first aider access"> Access to a mental health first aider or EAP</label>
+            <label class="check-item none-item"><input type="checkbox" name="in-work-support" value="No in-work support needed"> No in-work support currently needed</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Does your condition or situation vary? <span class="optional-tag">optional</span></label>
+          <div class="field-hint">For example, symptoms may be worse at certain times of day, in certain environments, or during particular periods.</div>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="varies" value="Yes"> Yes, it varies significantly</label>
+            <label class="radio-item"><input type="radio" name="varies" value="Somewhat"> It varies somewhat</label>
+            <label class="radio-item"><input type="radio" name="varies" value="No"> It is fairly consistent</label>
+            <label class="radio-item"><input type="radio" name="varies" value="Prefer not to say"> Prefer not to say</label>
+          </div>
+          <div class="conditional" id="cond-varies">
+            <label for="varies-detail">Tell us more about when things are harder and what would help most in those periods: <span class="optional-tag">optional</span></label>
+            <textarea id="varies-detail" placeholder="e.g. Mornings are harder; certain types of meetings drain me significantly; I may need to work from home on difficult days..."></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="wellbeing-other">Anything else about your wellbeing or in-work support you would like to note? <span class="optional-tag">optional</span></label>
+          <textarea id="wellbeing-other" placeholder="e.g. I have experience of previous support that was helpful; I would like a review date to be set..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 8: SUMMARY AND PRIORITIES
+    ====================================================== -->
+    <div class="step" data-step="8">
+      <div class="step-count">Section 8 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">✅</div>
+          <div>
+            <div class="section-title">Your Priorities and Next Steps</div>
+            <div class="section-desc">A chance to summarise what matters most and how you want to use this passport.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="top-three">In your own words, what are the three most important things that would help you work at your best? <span class="optional-tag">optional</span></label>
+          <div class="field-hint">There is no right answer. This is your space to be direct about what you genuinely need.</div>
+          <textarea id="top-three" style="min-height:100px" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="prev-support">Have you received any support in education or a previous role that you found particularly helpful? <span class="optional-tag">optional</span></label>
+          <textarea id="prev-support" placeholder="e.g. I had extra time in exams; I previously had a job coach funded through Access to Work..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Who have you already shared your support needs with? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="shared-with" value="Current manager"> My current manager</label>
+            <label class="check-item"><input type="checkbox" name="shared-with" value="HR"> HR or People team</label>
+            <label class="check-item"><input type="checkbox" name="shared-with" value="Occupational Health"> Occupational health</label>
+            <label class="check-item"><input type="checkbox" name="shared-with" value="Previous employer"> A previous employer</label>
+            <label class="check-item"><input type="checkbox" name="shared-with" value="Nobody yet"> Nobody yet</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>How do you want to use this passport? <span class="optional-tag">select all that apply</span></label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="passport-use" value="Conversation with manager"> As a starting point for a conversation with my manager</label>
+            <label class="check-item"><input type="checkbox" name="passport-use" value="HR or Access to Work application"> To support an HR process or an Access to Work application</label>
+            <label class="check-item"><input type="checkbox" name="passport-use" value="Personal record"> As a personal record of my needs that I keep and review</label>
+            <label class="check-item"><input type="checkbox" name="passport-use" value="Preparation for new role"> Preparation when starting a new role or post</label>
+            <label class="check-item"><input type="checkbox" name="passport-use" value="After a period of absence"> Following a period of absence or significant change</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="add-notes">Anything else you would like to record? <span class="optional-tag">optional</span></label>
+          <textarea id="add-notes" placeholder="Any other context, preferences or things you want noted..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         STEP 9: SHARING AND CONSENT
+    ====================================================== -->
+    <div class="step" data-step="9">
+      <div class="step-count">Section 9 of 9</div>
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🔒</div>
+          <div>
+            <div class="section-title">Sharing Your Passport</div>
+            <div class="section-desc">You choose exactly who sees what. Nothing is sent automatically, generating your passport just prepares the documents for you to share yourself.</div>
+          </div>
+        </div>
+
+        <p class="consent-intro">For each area below, tick who you're happy to share it with. Leave a box unticked to keep that area out of that person's report. Your own copy always includes everything you've entered, whatever you choose here.</p>
+
+        <div class="consent-quickrow">
+          <button type="button" class="chip-btn" onclick="selectAllForRecipient('manager')">Share everything with Manager</button>
+          <button type="button" class="chip-btn" onclick="selectAllForRecipient('hr')">Share everything with HR</button>
+          <button type="button" class="chip-btn" onclick="selectAllForRecipient('oh')">Share everything with Occ. Health</button>
+          <button type="button" class="chip-btn clear" onclick="clearAllConsent()">Clear all</button>
+        </div>
+
+        <div class="consent-table-wrap">
+          <table class="consent-table" id="consent-table">
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Manager</th>
+                <th>HR</th>
+                <th>Occ. Health</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-consent-section="env">
+                <td>🏢 Working Environment</td>
+                <td><input type="checkbox" data-consent="env-manager"></td>
+                <td><input type="checkbox" data-consent="env-hr"></td>
+                <td><input type="checkbox" data-consent="env-oh"></td>
+              </tr>
+              <tr data-consent-section="equipment">
+                <td>💻 Equipment and Technology</td>
+                <td><input type="checkbox" data-consent="equipment-manager"></td>
+                <td><input type="checkbox" data-consent="equipment-hr"></td>
+                <td><input type="checkbox" data-consent="equipment-oh"></td>
+              </tr>
+              <tr data-consent-section="travel">
+                <td>🚌 Getting To and From Work</td>
+                <td><input type="checkbox" data-consent="travel-manager"></td>
+                <td><input type="checkbox" data-consent="travel-hr"></td>
+                <td><input type="checkbox" data-consent="travel-oh"></td>
+              </tr>
+              <tr data-consent-section="comm">
+                <td>💬 Communication and Interaction</td>
+                <td><input type="checkbox" data-consent="comm-manager"></td>
+                <td><input type="checkbox" data-consent="comm-hr"></td>
+                <td><input type="checkbox" data-consent="comm-oh"></td>
+              </tr>
+              <tr data-consent-section="workload">
+                <td>📋 Planning, Organisation and Workload</td>
+                <td><input type="checkbox" data-consent="workload-manager"></td>
+                <td><input type="checkbox" data-consent="workload-hr"></td>
+                <td><input type="checkbox" data-consent="workload-oh"></td>
+              </tr>
+              <tr data-consent-section="wellbeing">
+                <td>🌱 Wellbeing and In-Work Support</td>
+                <td><input type="checkbox" data-consent="wellbeing-manager"></td>
+                <td><input type="checkbox" data-consent="wellbeing-hr"></td>
+                <td><input type="checkbox" data-consent="wellbeing-oh"></td>
+              </tr>
+              <tr data-consent-section="priorities">
+                <td>✅ Priorities and Next Steps</td>
+                <td><input type="checkbox" data-consent="priorities-manager"></td>
+                <td><input type="checkbox" data-consent="priorities-hr"></td>
+                <td><input type="checkbox" data-consent="priorities-oh"></td>
+              </tr>
+              <tr class="consent-hint-row">
+                <td colspan="4">"About You" details (name, role, contact) are included automatically wherever you share something, so whoever you share with knows whose passport it is.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="field" style="margin-top:8px">
+          <label>How would you like this passport shared? <span class="optional-tag">optional</span></label>
+          <div class="radio-group" id="share-method-group">
+            <label class="radio-item"><input type="radio" name="share-method" value="I'll share it myself"> I'll share it myself, in a conversation or by email</label>
+            <label class="radio-item"><input type="radio" name="share-method" value="I'd like HR to share it on my behalf"> I'd like HR to share the relevant sections on my behalf</label>
+            <label class="radio-item"><input type="radio" name="share-method" value="By email only, no meeting needed"> By email only, I'd rather not discuss it verbally straight away</label>
+            <label class="radio-item"><input type="radio" name="share-method" value="Other"> Other</label>
+          </div>
+          <div class="conditional" id="cond-share-method-other">
+            <label for="share-method-other-detail">Please specify <span class="optional-tag">optional</span></label>
+            <input type="text" id="share-method-other-detail" placeholder="How would you like this shared?">
+          </div>
+        </div>
+
+        <div class="field" id="recipient-emails-wrap">
+          <label>Recipient email addresses <span class="optional-tag">optional</span></label>
+          <div class="field-hint">Only needed if you'd like reports emailed automatically once generated. These fields appear once you've shared at least one area above with that person. You can still open, print or save every report yourself without filling these in.</div>
+          <div class="conditional" id="email-field-manager" style="margin-top:10px">
+            <label for="email-manager">Manager's email</label>
+            <input type="email" id="email-manager" placeholder="manager@example.com">
+          </div>
+          <div class="conditional" id="email-field-hr" style="margin-top:10px">
+            <label for="email-hr">HR email</label>
+            <input type="email" id="email-hr" placeholder="hr@example.com">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-amber" onclick="showReportSelector()">Generate My Reports</button>
+    </div>
+
+    <!-- NAV -->
+    <div class="nav-row" id="nav-row">
+      <button class="btn btn-secondary" id="btn-back" onclick="changeStep(-1)" style="display:none">← Back</button>
+      <button class="btn btn-primary" id="btn-next" onclick="changeStep(1)">Continue →</button>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- ======================================================
+       REPORT SELECTOR
+  ====================================================== -->
+  <div id="report-selector-panel">
+    <div class="report-selector-intro">
+      <h2>Your Reports Are Ready</h2>
+      <p>Three separate documents have been prepared. Open, review and print each one on its own, only sharing them with the people you've chosen.</p>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-top">
+        <span class="report-card-icon">🗂️</span>
+        <span class="report-card-title">Your Copy</span>
+      </div>
+      <p class="report-card-desc">A complete record of everything you've entered, plus a clear summary of who you've chosen to share each part with and how. This is for you to keep.</p>
+      <button class="btn btn-primary" onclick="viewReport('employee')">Open Your Copy →</button>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-top">
+        <span class="report-card-icon">🧭</span>
+        <span class="report-card-title">Manager Report</span>
+      </div>
+      <p class="report-card-desc">Only includes what you've chosen to share with your manager, organised using the EEES framework with practical conversation points from Which Means What.</p>
+      <button class="btn btn-primary" onclick="viewReport('manager')">Open Manager Report →</button>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-top">
+        <span class="report-card-icon">📊</span>
+        <span class="report-card-title">HR Summary</span>
+      </div>
+      <p class="report-card-desc">An overview for HR of what's been shared with them directly, plus what's also going to the manager or Occupational Health, and any actions that may need HR's help.</p>
+      <button class="btn btn-primary" onclick="viewReport('hr')">Open HR Summary →</button>
+    </div>
+
+    <div class="report-card" id="send-card">
+      <div class="report-card-top">
+        <span class="report-card-icon">✉️</span>
+        <span class="report-card-title">Send by Email</span>
+      </div>
+      <p class="report-card-desc" id="send-card-desc"></p>
+      <div id="send-card-body"></div>
+    </div>
+
+    <div class="print-row">
+      <button class="btn btn-secondary" onclick="backToForm()">← Back to edit answers</button>
+      <button class="btn btn-secondary" onclick="resetForm()">Start again</button>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       EMPLOYEE REPORT (full, standalone)
+  ====================================================== -->
+  <div class="report-panel" id="employee-report-panel">
+    <div class="results-header">
+      <h2>Your Workplace Support Passport</h2>
+      <p id="employee-subhead">Generated&hellip;</p>
+    </div>
+    <div id="employee-report-body"></div>
+    <div class="report-nav-row">
+      <button class="btn btn-secondary" onclick="backToSelector()">← Back to your reports</button>
+      <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       MANAGER REPORT (full, standalone)
+  ====================================================== -->
+  <div class="report-panel" id="manager-report-panel">
+    <div class="results-header">
+      <h2>Support Conversation Guide</h2>
+      <p id="manager-subhead">Prepared&hellip;</p>
+    </div>
+    <div id="manager-report-body"></div>
+    <div class="report-nav-row">
+      <button class="btn btn-secondary" onclick="backToSelector()">← Back to your reports</button>
+      <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       HR REPORT (full, standalone)
+  ====================================================== -->
+  <div class="report-panel" id="hr-report-panel">
+    <div class="results-header">
+      <h2>HR Summary</h2>
+      <p id="hr-subhead">Prepared&hellip;</p>
+    </div>
+    <div id="hr-report-body"></div>
+    <div class="report-nav-row">
+      <button class="btn btn-secondary" onclick="backToSelector()">← Back to your reports</button>
+      <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 9;
+
+  function changeStep(dir) {
+    const steps = document.querySelectorAll('.step');
+    steps[currentStep - 1].classList.remove('active');
+    currentStep += dir;
+    if (currentStep < 1) currentStep = 1;
+    if (currentStep > totalSteps) currentStep = totalSteps;
+    steps[currentStep - 1].classList.add('active');
+    updateNav();
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateNav() {
+    const btnBack = document.getElementById('btn-back');
+    const btnNext = document.getElementById('btn-next');
+    const navRow  = document.getElementById('nav-row');
+    btnBack.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+    btnNext.style.display = currentStep < totalSteps ? 'inline-flex' : 'none';
+    navRow.style.justifyContent = currentStep === 1 ? 'flex-end' : 'space-between';
+  }
+
+  function updateProgress() {
+    const pct = Math.round((currentStep / totalSteps) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = 'Section ' + currentStep + ' of ' + totalSteps;
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  // Checkbox active state
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      this.closest('.check-item').classList.toggle('checked', this.checked);
+    });
+  });
+
+  // Radio active state + conditional reveals
+  document.querySelectorAll('.radio-item input[type=radio]').forEach(function(rb) {
+    rb.addEventListener('change', function() {
+      var group = this.closest('.radio-group');
+      group.querySelectorAll('.radio-item').forEach(function(ri) {
+        ri.classList.remove('selected');
+      });
+      this.closest('.radio-item').classList.add('selected');
+      // Varies conditional
+      if (this.name === 'varies') {
+        var cond = document.getElementById('cond-varies');
+        cond.classList.toggle('visible', this.value === 'Yes' || this.value === 'Somewhat');
+      }
+      // Share method "Other" conditional
+      if (this.name === 'share-method') {
+        var condShare = document.getElementById('cond-share-method-other');
+        condShare.classList.toggle('visible', this.value === 'Other');
+      }
+    });
+  });
+
+  // Software "none" shows info request
+  document.querySelectorAll('input[name=software]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var anyChecked = Array.from(document.querySelectorAll('input[name=software]'))
+        .some(function(c) { return c.checked && c.value !== 'None currently'; });
+      document.getElementById('cond-software-info').classList.toggle('visible', anyChecked);
+    });
+  });
+
+  function getChecked(name) {
+    return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'))
+      .map(function(c) { return c.value; });
+  }
+
+  function getRadio(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function escapeHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : s;
+    return d.innerHTML;
+  }
+
+  function row(q, a) {
+    if (!a || a === '' || (Array.isArray(a) && a.length === 0)) {
+      return '<div class="result-row"><span class="result-q">' + q + '</span><span class="result-empty">Not recorded</span></div>';
+    }
+    var display = Array.isArray(a) ? a.map(escapeHtml).join('<br>') : escapeHtml(a).replace(/\n/g, '<br>');
+    return '<div class="result-row"><span class="result-q">' + q + '</span><span class="result-a">' + display + '</span></div>';
+  }
+
+  function section(icon, title, html) {
+    return '<div class="results-section">'
+      + '<div class="results-section-head"><span>' + icon + '</span><span>' + title + '</span></div>'
+      + '<div class="results-section-body">' + html + '</div>'
+      + '</div>';
+  }
+
+  /* ============================================================
+     SHARING CONSENT
+  ============================================================ */
+  const CONSENT_SECTIONS = [
+    { key: 'env',        label: 'Working Environment',                icon: '🏢', checkFields: ['work-location', 'env-sensory'],              textFields: ['env-other'] },
+    { key: 'equipment',  label: 'Equipment and Technology',            icon: '💻', checkFields: ['equipment', 'software'],                     textFields: ['equipment-other'] },
+    { key: 'travel',     label: 'Getting To and From Work',            icon: '🚌', checkFields: ['travel', 'access'],                           textFields: ['travel-other'] },
+    { key: 'comm',       label: 'Communication and Interaction',       icon: '💬', checkFields: ['info-receive', 'comm-style', 'interview'],    textFields: ['comm-other'] },
+    { key: 'workload',   label: 'Planning, Organisation and Workload', icon: '📋', checkFields: ['workload', 'exec-difficulty'],               textFields: ['workload-other'] },
+    { key: 'wellbeing',  label: 'Wellbeing and In-Work Support',       icon: '🌱', checkFields: ['wellbeing', 'in-work-support'],              textFields: ['wellbeing-other', 'varies-detail'] },
+    { key: 'priorities', label: 'Priorities and Next Steps',           icon: '✅', checkFields: [],                                             textFields: ['top-three', 'prev-support', 'add-notes'] }
+  ];
+
+  function isShared(sectionKey, recipient) {
+    var el = document.querySelector('[data-consent="' + sectionKey + '-' + recipient + '"]');
+    return el ? el.checked : false;
+  }
+
+  function recipientsForSection(sectionKey) {
+    var out = [];
+    if (isShared(sectionKey, 'manager')) out.push('Manager');
+    if (isShared(sectionKey, 'hr')) out.push('HR');
+    if (isShared(sectionKey, 'oh')) out.push('Occupational Health');
+    return out;
+  }
+
+  function selectAllForRecipient(recipient) {
+    document.querySelectorAll('[data-consent$="-' + recipient + '"]').forEach(function(cb) { cb.checked = true; });
+  }
+
+  function clearAllConsent() {
+    document.querySelectorAll('[data-consent]').forEach(function(cb) { cb.checked = false; });
+  }
+
+  /* ============================================================
+     EEES / WHICH MEANS WHAT TRANSLATION DICTIONARY
+     Maps each reported checkbox to an EEES tag (or tags), a
+     plain-language meaning, a short set of questions to explore
+     it together, and a short set of concrete adjustment ideas.
+     Options like "None currently" / "No preference" are omitted
+     deliberately, there is nothing to translate for a manager.
+  ============================================================ */
+  const TRANSLATIONS = {
+    'work-location': {
+      "Quiet private space": { tags: ['env'], meaning: "Open-plan or high-traffic settings may make sustained focus harder, and can create an uneven starting point compared with colleagues less affected by noise or interruption.", questions: ["What does a typical hour in the current space feel like?", "Is it the noise, the interruptions, or something else that matters most?"], adjustments: ["A quiet room or booth for focused work, even part of the day", "A protected desk away from walkways or high-traffic areas"] },
+      "Open plan but with noise management": { tags: ['env', 'sen'], meaning: "Shared space can work well once noise is actively managed rather than left to chance.", questions: ["What's already helping, and what would help further?", "Is there a specific time of day or task where noise matters most?"], adjustments: ["Confirm the headphones policy explicitly", "Review desk position relative to noise sources like printers or meeting pods"] },
+      "Home working": { tags: ['env'], meaning: "Home may reduce sensory load or offer more control over the environment, a legitimate reason for flexibility rather than a simple preference.", questions: ["Which days or tasks benefit most from working at home?", "Is there something specific about the office this is compensating for?"], adjustments: ["Agree a hybrid pattern reflecting when home working helps most", "Review the pattern after a few weeks rather than fixing it permanently from day one"] },
+      "Fixed consistent location": { tags: ['env', 'ef'], meaning: "Hot-desking adds a daily setup and decision cost on top of the work itself, which can disproportionately affect anyone who relies on routine and predictability.", questions: ["What specifically makes moving desks difficult, the setup, the unfamiliarity, something else?", "Would a reserved zone work as well as one fixed desk?"], adjustments: ["Allocate a consistent desk or zone rather than rotating", "If hot-desking can't be avoided, agree a small, predictable set of options rather than the whole floor"] },
+      "Flexible/varied locations": { tags: ['env'], meaning: "Variety in location may genuinely support engagement rather than being a barrier.", questions: ["Is there anything that would make moving around even easier?"], adjustments: ["Likely no adjustment needed, just confirm this flexibility stays available"] }
+    },
+    'env-sensory': {
+      "Lighting - natural or adjustable": { tags: ['sen'], meaning: "Fixed artificial lighting may cause discomfort or fatigue that builds across the day.", questions: ["Does it affect focus, physical comfort, or both?", "Is there a time of day it's more noticeable?"], adjustments: ["A desk near natural light", "A desk lamp instead of relying on overhead lighting"] },
+      "Lighting - avoid fluorescent": { tags: ['sen'], meaning: "Fluorescent lighting can be a genuine sensory trigger, not simply a dislike.", questions: ["Is it flicker, brightness, or colour temperature that's the issue?"], adjustments: ["Alternative lighting where possible", "Repositioning away from direct overhead strips"] },
+      "Temperature sensitivity": { tags: ['sen'], meaning: "Office temperature swings can be more disruptive than they appear from the outside.", questions: ["Does it affect concentration, physical comfort, or both?"], adjustments: ["A desk away from vents, windows or doors", "Explicit permission to layer clothing regardless of dress code"] },
+      "Background noise": { tags: ['sen'], meaning: "Ambient noise may be actively reducing concentration, not just mild annoyance.", questions: ["Is it constant noise, sudden noise, or specific sounds that matter most?", "What's the impact on the work itself, errors, speed, fatigue?"], adjustments: ["Noise-cancelling headphones", "A quieter desk or protected focus slots away from busy periods"] },
+      "Scent sensitivity": { tags: ['sen'], meaning: "Strong fragrances can cause real physical discomfort, not just mild dislike.", questions: ["Is it particular products, communal areas, or something else?"], adjustments: ["A fragrance-light area or desk placement away from shared spaces", "A general team reminder about strong scents, framed neutrally"] },
+      "Crowded or busy spaces": { tags: ['sen', 'env'], meaning: "Busy areas may be genuinely harder to regulate in, not just uncomfortable.", questions: ["Is it specific spaces (kitchen, lifts, entrance) or busyness generally?", "Does timing make a difference?"], adjustments: ["Adjusted timing for moving around the building", "A calmer base to return to between busy periods"] },
+      "Visual clutter": { tags: ['sen'], meaning: "A visually disorganised environment can compete for attention throughout the day.", questions: ["Is it the desk itself, shared spaces, or screen-based clutter?"], adjustments: ["Support with desk organisation", "Screening off busy sightlines where practical"] }
+    },
+    'equipment': {
+      "Ergonomic seating or adjustable desk": { tags: ['env'], meaning: "Physical discomfort can quietly erode focus and energy across the day.", questions: ["Is this about a specific pain point, or general comfort over a full day?"], adjustments: ["A workstation (DSE) assessment to confirm what's needed", "Adjustable seating or a sit-stand desk, potentially funded via Access to Work"] },
+      "Specialist keyboard or mouse": { tags: ['env'], meaning: "Standard input devices may cause discomfort or reduce efficiency.", questions: ["Have they tried alternatives before, and what worked or didn't?"], adjustments: ["A short trial of alternative devices before committing to a purchase"] },
+      "Noise cancelling headphones": { tags: ['sen'], meaning: "Suggests auditory input is a real barrier to concentration, not a preference for music.", questions: ["Is this for open-plan noise, meetings, or both?"], adjustments: ["Provide directly if the cost is low relative to the benefit"] },
+      "Larger or additional screens": { tags: ['env', 'ef'], meaning: "Small or single screens can increase the effort of switching between tasks and documents.", questions: ["Which tasks make the biggest difference, side-by-side comparison, multitasking, something else?"], adjustments: ["A second monitor to reduce task-switching load"] },
+      "Screen magnification": { tags: ['sen'], meaning: "Visual demands may be adding strain that isn't obvious day to day.", questions: ["Is built-in magnification enough, or is dedicated software needed?"], adjustments: ["Check OS-level magnification and contrast settings first", "Dedicated magnification software if built-in tools aren't enough"] },
+      "Hearing aids or loop system": { tags: ['sen'], meaning: "May need confirmed access to induction-loop equipped meeting spaces, not just personal equipment.", questions: ["Which rooms or situations are hardest currently?"], adjustments: ["Confirm meeting rooms and reception have working loop systems", "Check this is tested periodically, not just installed once"] },
+      "Mobility aids at workstation": { tags: ['env'], meaning: "Workstation layout may need adapting around physical access needs.", questions: ["What does the current layout make difficult, reach, clearance, routes?"], adjustments: ["A workplace needs assessment covering desk height, clearances and routes"] },
+      "Fidget or sensory tools": { tags: ['sen', 'er'], meaning: "Sensory regulation tools can support focus and reduce overwhelm.", questions: ["Are these used at a desk, in meetings, or both?"], adjustments: ["Simply allow their use at a desk and in meetings, this typically costs nothing"] }
+    },
+    'software': {
+      "Text-to-speech (e.g. Read&Write)": { tags: ['sen', 'ef'], meaning: "Reading long text may take more time or effort than it appears to from the outside.", questions: ["Which types of document are hardest, long reports, dense emails, something else?"], adjustments: ["Check what's already used and whether a licence can be provided or extended organisation-wide"] },
+      "Speech-to-text (e.g. Dragon)": { tags: ['ef'], meaning: "Getting thoughts into written form may be a bigger barrier than typing speed alone.", questions: ["Is this for drafting, editing, or both?"], adjustments: ["Check whether dictation tools are already licensed organisation-wide"] },
+      "Screen reader (e.g. JAWS, NVDA)": { tags: ['sen'], meaning: "Suggests a significant visual access need.", questions: ["Which systems are hardest to use currently?"], adjustments: ["Confirm core systems are screen-reader compatible, this usually needs IT involved early", "Test any new software procurement for compatibility before rollout"] },
+      "Mind mapping tools": { tags: ['ef'], meaning: "Linear formats like long documents may be harder to plan from than visual ones.", questions: ["Is this for personal planning, or would it help in shared/team planning too?"], adjustments: ["Let planning work happen in whatever format helps it click, not just the standard template"] },
+      "Task management / reminder apps": { tags: ['ef'], meaning: "External prompts may be doing real work that memory alone can't reliably do.", questions: ["Which types of deadline or task get missed most easily?"], adjustments: ["Normalise shared reminders and calendar invites rather than relying on verbal follow-up"] },
+      "Magnification software": { tags: ['sen'], meaning: "On-screen visual demands may be adding strain beyond what's obvious.", questions: ["Is this consistent, or worse for certain systems or screens?"], adjustments: ["Check display settings and dedicated magnification software are both available"] },
+      "Colour overlay / tinted reading tools": { tags: ['sen'], meaning: "On-screen or printed text may be visually uncomfortable without adjustment.", questions: ["Does it affect screen reading, paper reading, or both?"], adjustments: ["Simple colour, contrast or font changes, which often help immediately and cost nothing"] },
+      "AI writing or summarising tools": { tags: ['ef'], meaning: "Structuring or condensing written work may take disproportionate effort.", questions: ["Is this for drafting from scratch, or condensing existing material?"], adjustments: ["Check organisational policy so this can be used openly, not covertly"] }
+    },
+    'travel': {
+      "Reserved or accessible parking": { tags: ['env'], meaning: "Physical access to parking may affect their ability to arrive comfortably and on time.", questions: ["What's the current gap, distance, availability, or something else?"], adjustments: ["Reserved or accessible parking close to the entrance"] },
+      "Flexible start or finish times": { tags: ['ef', 'er'], meaning: "Fixed commute timing may add avoidable pressure before the working day even starts.", questions: ["Is it the commute itself, or the fixed time that's harder?"], adjustments: ["A flexed start or finish window that doesn't affect output"] },
+      "Taxi or funded travel support": { tags: ['env'], meaning: "Standard commuting may not be practically accessible for this person.", questions: ["Would this help for the whole commute, or a specific leg of it?"], adjustments: ["Explore Access to Work funded travel support together"] },
+      "Vehicle adaptations": { tags: ['env'], meaning: "Suggests a specific physical access need connected to driving or commuting.", questions: ["Has this been raised with Access to Work or occupational health already?"], adjustments: ["Likely best handled through an Access to Work or occupational health referral rather than internally"] },
+      "Travel buddy or support": { tags: ['er', 'env'], meaning: "Commuting alone may be a source of anxiety or practical difficulty.", questions: ["Is this about safety, confidence, or practical navigation?"], adjustments: ["Flexible arrival to align with a colleague's schedule where that helps informally"] },
+      "Remote working to reduce travel": { tags: ['env'], meaning: "The commute itself may be a significant barrier, separate from the work.", questions: ["How much remote working would meaningfully reduce this?"], adjustments: ["A remote or hybrid pattern that reduces commuting days"] }
+    },
+    'access': {
+      "Step-free or lift access": { tags: ['env'], meaning: "Physical access to the building or floor needs confirming, not assuming.", questions: ["Has the actual route been walked/tested end to end recently?"], adjustments: ["Confirm accessible routes are genuinely step-free from entry to desk, not just at the main door"] },
+      "Accessible toilets nearby": { tags: ['env'], meaning: "Distance to facilities may matter more than it first appears.", questions: ["Is the nearest accessible facility a reasonable distance from their usual desk?"], adjustments: ["Confirm proximity, or adjust desk location if it isn't"] },
+      "Clear signage": { tags: ['env', 'ef'], meaning: "Navigating an unfamiliar or complex building can add real cognitive load, especially early on.", questions: ["Is this ongoing, or mainly an issue when starting or visiting somewhere new?"], adjustments: ["A simple printed or digital wayfinding guide, especially useful for new starters or visitors"] },
+      "Quiet or less busy entrance": { tags: ['sen'], meaning: "A busy entrance or reception area can be a difficult start to the working day.", questions: ["Is a quieter access point available, or would staggered arrival help instead?"], adjustments: ["A quieter access point if one exists", "A slightly staggered arrival time to avoid the busiest period"] },
+      "Widened doors or adapted spaces": { tags: ['env'], meaning: "Suggests a specific physical access requirement.", questions: ["Has this been confirmed through a formal assessment yet?"], adjustments: ["Best confirmed through a workplace needs assessment for accuracy"] }
+    },
+    'info-receive': {
+      "Written instructions or summaries": { tags: ['ef'], meaning: "Verbal-only information may not reliably land or be retained, whatever the person's ability.", questions: ["Is this mainly for tasks, meetings, or both?"], adjustments: ["Follow up key verbal points with a short written note or email as standard practice"] },
+      "Verbal explanation first, then written": { tags: ['ef'], meaning: "May process better hearing something first, then having it available to refer back to.", questions: ["Is a quick verbal run-through enough, or is more detail needed before it's written up?"], adjustments: ["Combine a brief verbal explanation with written confirmation shortly after"] },
+      "Bullet points and short paragraphs": { tags: ['ef'], meaning: "Dense prose may take longer to process than the same content in bullet form.", questions: ["Does this apply to emails, documents, or both?"], adjustments: ["Format instructions and updates as short bullet points where practical"] },
+      "Visual diagrams or flowcharts": { tags: ['ef'], meaning: "Visual structure may be easier to follow than narrative text for processes and sequences.", questions: ["Which kinds of information would benefit most, processes, structures, timelines?"], adjustments: ["Use diagrams or flowcharts for processes wherever that's practical"] },
+      "Time to read/process before discussing": { tags: ['ef', 'er'], meaning: "Being asked to respond immediately may not reflect their actual thinking speed or quality of thought.", questions: ["How much lead time typically makes a difference?"], adjustments: ["Share materials in advance rather than expecting reactions in the moment"] },
+      "Agenda in advance for meetings": { tags: ['ef'], meaning: "Unstructured or surprise meetings can be harder to prepare for and engage with fully.", questions: ["Is a brief list of topics enough, or is more detail needed?"], adjustments: ["Send a short agenda ahead of meetings, even an informal one"] },
+      "Repeated or summarised at end": { tags: ['ef'], meaning: "Long discussions can lose their key points along the way, for anyone.", questions: ["Would a written summary afterwards help as well as a verbal one?"], adjustments: ["Close meetings with a quick summary of what's been agreed"] }
+    },
+    'comm-style': {
+      "One to one rather than groups": { tags: ['er'], meaning: "Group settings may be harder to contribute in or process, independent of the person's knowledge or ability.", questions: ["Is it group size, unpredictability, or something specific about groups?"], adjustments: ["Offer key discussions one to one where possible, rather than in a group"] },
+      "Written over verbal when possible": { tags: ['ef'], meaning: "Written channels may allow more accurate, considered communication.", questions: ["Is this for all communication, or mainly for anything important or complex?"], adjustments: ["Default to email or message for non-urgent matters"] },
+      "Extra processing time in conversations": { tags: ['ef', 'er'], meaning: "A pause before responding isn't disengagement, it's processing time.", questions: ["Does prompting for a quicker answer make things harder, or is silence genuinely fine?"], adjustments: ["Allow silence in conversation rather than filling it or repeating the question quickly"] },
+      "Direct and literal communication": { tags: ['ef'], meaning: "Indirect language, hints, or sarcasm may not land as intended.", questions: ["Has anything been misread as blunt or rude in the past that was meant plainly?"], adjustments: ["Say what you mean plainly, it will likely be received better, not worse"] },
+      "Structured meetings with clear purpose": { tags: ['ef'], meaning: "Open-ended meetings without a clear purpose can be harder to engage with productively.", questions: ["Would a stated purpose and desired outcome at the start help most meetings, or just longer ones?"], adjustments: ["State the purpose and desired outcome at the start of meetings"] },
+      "BSL interpreter or relay service": { tags: ['env'], meaning: "A specific access requirement for spoken communication.", questions: ["Is current provision reliable and booked automatically, or does it need requesting each time?"], adjustments: ["Arrange as standard practice for relevant meetings, not requested fresh each time"] },
+      "Notetaker in meetings": { tags: ['ef'], meaning: "Listening and writing at the same time can be very difficult to do well together.", questions: ["Would shared notes afterwards be enough, or is live notetaking needed?"], adjustments: ["Provide a notetaker, or share notes afterwards as standard"] }
+    },
+    'interview': {
+      "Questions provided in writing": { tags: ['ef'], meaning: "Verbal-only questions delivered in the moment may disadvantage strong candidates who process information differently.", questions: ["In writing, or read aloud with visible text at the same time?"], adjustments: ["Share questions in writing at the same time they're asked, or in advance"] },
+      "Extra time to answer": { tags: ['ef', 'er'], meaning: "Time pressure can affect performance independent of a candidate's actual ability.", questions: ["Is a fixed extra allowance enough, or does it vary by question?"], adjustments: ["Build in extra time as standard practice, not as a special favour"] },
+      "Prompts to expand or clarify": { tags: ['ef'], meaning: "A short first answer may not reflect the full extent of someone's knowledge.", questions: ["Would a gentle prompt to expand usually surface more, based on past experience?"], adjustments: ["Use gentle follow-up prompts rather than moving straight on after a brief answer"] },
+      "Smaller panel": { tags: ['er'], meaning: "Large panels can be harder to engage with under pressure.", questions: ["Is there a maximum panel size that tends to feel manageable?"], adjustments: ["Keep the panel small where possible, or introduce everyone clearly beforehand"] },
+      "Accessible format alternative": { tags: ['ef'], meaning: "A standard interview format may not showcase this person's actual strengths.", questions: ["What format has worked well for them before, if any?"], adjustments: ["Consider a task-based or portfolio-led alternative where appropriate for the role"] }
+    },
+    'workload': {
+      "Clear written task lists": { tags: ['ef'], meaning: "Verbal or ambiguous priorities are hard to hold in mind alongside everything else already on the go.", questions: ["Is a simple ranked list enough, or is more structure needed?"], adjustments: ["Provide task lists in writing with a clear order of priority"] },
+      "Deadlines broken into steps": { tags: ['ef'], meaning: "A large deadline without interim points can be overwhelming to plan backwards from.", questions: ["What size of step tends to feel manageable?"], adjustments: ["Break bigger deadlines into smaller checkpoints together, agreed in advance"] },
+      "Protected time for focused work": { tags: ['ef'], meaning: "Frequent interruption may be disproportionately costly to their output compared with colleagues.", questions: ["How long a stretch of uninterrupted time tends to make the biggest difference?"], adjustments: ["Agree protected focus time where interruptions are genuinely minimised, e.g. a no-meeting block"] },
+      "Regular check-ins with manager": { tags: ['ef', 'er'], meaning: "Infrequent contact can let small issues drift into larger ones before anyone notices.", questions: ["Is a short, frequent check-in preferred over a longer, occasional one?"], adjustments: ["Set a short, regular check-in rather than relying on ad hoc conversations"] },
+      "Consistent routines": { tags: ['ef'], meaning: "Unpredictability adds a planning cost on top of the work itself.", questions: ["Which routines matter most, meeting days, task order, something else?"], adjustments: ["Keep patterns like meeting days and formats consistent where you can"] },
+      "Advance notice of changes": { tags: ['ef', 'er'], meaning: "Sudden changes can be disproportionately destabilising, even when the change itself is small.", questions: ["How much notice tends to make the biggest difference?"], adjustments: ["Flag upcoming changes as early as possible, even in draft or provisional form"] },
+      "Reminders and prompts": { tags: ['ef'], meaning: "Relying on memory alone for deadlines may not be reliable, regardless of effort or care.", questions: ["Do calendar invites work, or is a more direct reminder needed?"], adjustments: ["Normalise calendar invites and reminder prompts rather than assuming they'll remember"] },
+      "Flexibility on how tasks are completed": { tags: ['ef'], meaning: "The method may need to flex even where the outcome doesn't.", questions: ["Which parts of the current process feel most fixed unnecessarily?"], adjustments: ["Focus conversations on outcomes, and stay open on the route to get there"] }
+    },
+    'exec-difficulty': {
+      "Starting tasks": { tags: ['ef'], meaning: "Task initiation can be a genuine, specific barrier, separate from motivation or ability.", questions: ["Does this apply to all tasks, or mainly unfamiliar or complex ones?"], adjustments: ["Help break the very first step down into something small and concrete"] },
+      "Switching between tasks": { tags: ['ef'], meaning: "Interruptions may cost more time and effort to recover from than they appear to.", questions: ["Roughly how long does it take to refocus after an interruption?"], adjustments: ["Batch similar tasks together and protect against unnecessary context-switching"] },
+      "Estimating time": { tags: ['ef'], meaning: "Time estimation can be a specific, measurable difficulty rather than carelessness.", questions: ["Does this tend towards under-estimating, over-estimating, or both depending on the task?"], adjustments: ["Work out realistic time estimates together rather than relying on self-estimates alone"] },
+      "Managing multiple priorities": { tags: ['ef'], meaning: "Holding several priorities at once can be harder than any of the individual tasks themselves.", questions: ["Is it the number of priorities, or the lack of clear ranking, that's harder?"], adjustments: ["Help rank priorities explicitly rather than leaving it implicit"] },
+      "Remembering verbal instructions": { tags: ['ef'], meaning: "Verbal instructions without a written record may not be reliably retained.", questions: ["Is a quick written follow-up enough, or does it need to be provided at the time?"], adjustments: ["Always follow up verbal instructions with something written, even a short message"] },
+      "Paperwork or admin tasks": { tags: ['ef'], meaning: "Administrative tasks can be disproportionately draining despite seeming simple from the outside.", questions: ["Is it the tasks themselves, or the way they're batched or timed?"], adjustments: ["Streamline or share the admin load on repetitive tasks where possible"] }
+    },
+    'wellbeing': {
+      "Managing energy and fatigue": { tags: ['er'], meaning: "Energy may not be evenly available across the day or week, which affects timing as much as workload.", questions: ["Is there a pattern to when energy is higher or lower?"], adjustments: ["Flex timing or pacing of demanding work around higher-energy periods where possible"] },
+      "Managing stress or anxiety": { tags: ['er'], meaning: "Day-to-day stress may be a bigger factor in performance than it appears from the outside.", questions: ["What tends to raise stress most, workload, uncertainty, something else?"], adjustments: ["Check in periodically as a matter of course, not only when something visibly goes wrong"] },
+      "Recovery time after demanding periods": { tags: ['er'], meaning: "Back-to-back demands without recovery time can compound rather than resolve on their own.", questions: ["What does useful recovery time actually look like for them?"], adjustments: ["Build in buffer time after intense meetings, events or deadlines where possible"] },
+      "Navigating workplace relationships": { tags: ['er'], meaning: "Interpersonal dynamics may take more conscious effort to manage than they do for others.", questions: ["Is there a specific situation, or is this more general?"], adjustments: ["Be a clear, calm point of contact if conflict or misunderstanding arises"] },
+      "Managing the impact of medication or treatment": { tags: ['er', 'ef'], meaning: "Treatment can affect energy, focus or mood in ways that vary day to day, often predictably around appointments or dosage changes.", questions: ["Is the impact predictable around specific times, or more variable?"], adjustments: ["Some flexibility around appointment timing and expectations on those days"] },
+      "Unpredictable symptoms or flare-ups": { tags: ['er', 'env'], meaning: "Needs may genuinely vary day to day rather than being static, which is worth planning for rather than treating as inconsistency.", questions: ["What would a helpful response look like on a harder day, practically?"], adjustments: ["Agree in advance what flexibility on harder days looks like, so it doesn't need renegotiating each time"] }
+    },
+    'in-work-support': {
+      "Regular structured check-ins": { tags: ['ef', 'er'], meaning: "Consistent contact helps catch issues early, before they grow into something larger.", questions: ["What frequency and format tends to work best?"], adjustments: ["Set a regular, protected time for this rather than relying on ad hoc chats"] },
+      "A named buddy or mentor at work": { tags: ['er'], meaning: "Informal support from a peer can reduce the load on formal management channels.", questions: ["Is there someone already in mind, or would this need arranging?"], adjustments: ["Consider whether a buddy or mentor pairing could be arranged"] },
+      "Job coach or workplace assessor": { tags: ['ef'], meaning: "External expertise may identify adjustments that aren't obvious from inside the organisation.", questions: ["Has this been explored before, and if so what came of it?"], adjustments: ["Consider a referral, potentially funded via Access to Work"] },
+      "Occupational health referral": { tags: ['er'], meaning: "A professional assessment can strengthen and formalise support that's already being discussed informally.", questions: ["Would they like to be involved in shaping the referral question?"], adjustments: ["Discuss making a referral, with the employee involved throughout the process"] },
+      "Access to Work support": { tags: ['env'], meaning: "Funded external support may cover equipment, travel or coaching costs that would otherwise fall to the organisation.", questions: ["Have they applied before, or would this be a first application?"], adjustments: ["Support the application together, HR or a job coach can often help directly"] },
+      "Flexibility for appointments": { tags: ['ef', 'er'], meaning: "Ongoing appointments may need accommodating as a standing pattern, not a one-off request each time.", questions: ["Are appointments on a predictable schedule, or more ad hoc?"], adjustments: ["Agree a standing approach to appointment time rather than negotiating case by case"] },
+      "Mental health first aider access": { tags: ['er'], meaning: "Knowing support is visibly available can matter as much as actually using it.", questions: ["Do they already know who the first aiders are and how to reach them?"], adjustments: ["Make sure they know who the first aiders are and how to reach them"] }
+    }
+  };
+
+  const TEXT_FIELD_TAGS = {
+    'env-other': ['env'],
+    'equipment-other': ['env'],
+    'travel-other': ['env'],
+    'comm-other': ['ef'],
+    'workload-other': ['ef'],
+    'wellbeing-other': ['er'],
+    'varies-detail': ['er']
+  };
+
+  // Generic, non-presumptuous prompts for exploring free-text notes,
+  // since these don't map to a fixed item and shouldn't be guessed at.
+  const QUOTE_PROMPTS = {
+    ef: ["What would make this easier to plan or follow day to day?", "Is there a small change to how information or deadlines are shared that would help here?"],
+    er: ["What does a harder day look like compared with a good one?", "What's helped with this before, if anything?"],
+    env: ["Is this mainly about the physical space, the equipment, or both?", "Would walking the space together help pin down what to change?"],
+    sen: ["Is this about one particular sense, or several at once?", "Does it vary by time of day or how busy things are?"]
+  };
+
+  const ACTION_FLAGS = {
+    'in-work-support': {
+      "Access to Work support": "Employee may want help applying for Access to Work funding.",
+      "Occupational health referral": "Consider making an occupational health referral, with the employee's involvement.",
+      "Job coach or workplace assessor": "Employee may benefit from a workplace needs assessment or job coach referral.",
+      "Mental health first aider access": "Confirm the employee knows how to reach a mental health first aider or EAP."
+    },
+    'travel': {
+      "Taxi or funded travel support": "May be eligible for Access to Work funded travel, worth exploring together.",
+      "Vehicle adaptations": "Likely needs an Access to Work or occupational health-led conversation."
+    },
+    'comm-style': {
+      "BSL interpreter or relay service": "Arrange interpreter or relay service access as standard practice."
+    },
+    'equipment': {
+      "Mobility aids at workstation": "A workplace needs assessment may help confirm workstation adaptations."
+    }
+  };
+
+  const EEES_META = [
+    { key: 'ef',  label: 'Executive Function',  cls: 'ef',  icon: '🧩' },
+    { key: 'er',  label: 'Emotional Regulation', cls: 'er',  icon: '💛' },
+    { key: 'env', label: 'Environment',          cls: 'env', icon: '🏢' },
+    { key: 'sen', label: 'Sensory',              cls: 'sen', icon: '🔆' }
+  ];
+
+  // Reasonable adjustments / PCP framing shown once per EEES category so
+  // managers can connect what's below to their own policy, not a checklist.
+  const EEES_POLICY = {
+    ef: "Most items here relate to a provision, criterion or practice (PCP), such as verbal-only instructions, fixed unbroken deadlines, or an expectation of unprompted task-switching, that can put someone at a substantial disadvantage compared with colleagues not affected in the same way. The adjustments below are typically low-cost and quick to put in place, which matters because the law only expects what's reasonable, not everything conceivable.",
+    er: "These items usually connect to a PCP around pace, exposure, or recovery time, for example an expectation to move straight from one demanding meeting to the next with no buffer. This sits alongside general wellbeing support, but from a reasonable adjustments perspective the relevant question is what in how work is structured is creating the disadvantage, not what's \"wrong\" with the person.",
+    env: "These items relate to the physical working environment, desk allocation, building access, commuting expectations, standard-issue equipment, all of which the duty to make reasonable adjustments explicitly covers. Adjustments here are often a one-off change (a desk, a route, a funding application) rather than an ongoing accommodation.",
+    sen: "Sensory items usually point to a PCP around uniform lighting, noise or equipment provided the same way for everyone. Auxiliary aids, headphones, screen readers, loop systems, tinted overlays, are one of the clearest and most established categories under the duty, and are rarely disproportionate to provide."
+  };
+
+  const LEGAL_NOTE = "This connects what's been shared to how reasonable adjustments typically work under the Equality Act: identifying a provision, criterion or practice (PCP) causing a substantial disadvantage, then adjusting it in a way that isn't a disproportionate burden. It's guidance to support a conversation, not legal advice, check individual cases against your own policy and HR where needed.";
+
+  function buildEeesEntries(recipient) {
+    var groups = { ef: [], er: [], env: [], sen: [] };
+    CONSENT_SECTIONS.forEach(function(sec) {
+      if (!isShared(sec.key, recipient)) return;
+      sec.checkFields.forEach(function(fieldName) {
+        getChecked(fieldName).forEach(function(v) {
+          var t = TRANSLATIONS[fieldName] && TRANSLATIONS[fieldName][v];
+          if (!t) return;
+          t.tags.forEach(function(tag) {
+            groups[tag].push({ reported: v, meaning: t.meaning, questions: t.questions || [], adjustments: t.adjustments || [], section: sec.label });
+          });
+        });
+      });
+      sec.textFields.forEach(function(fid) {
+        var text = val(fid);
+        if (!text) return;
+        var tags = TEXT_FIELD_TAGS[fid] || ['ef'];
+        tags.forEach(function(tag) {
+          groups[tag].push({ quote: text, section: sec.label });
+        });
+      });
+    });
+    return groups;
+  }
+
+  function buildActionFlags(recipient) {
+    var flags = [];
+    CONSENT_SECTIONS.forEach(function(sec) {
+      if (!isShared(sec.key, recipient)) return;
+      sec.checkFields.forEach(function(fieldName) {
+        getChecked(fieldName).forEach(function(v) {
+          var f = ACTION_FLAGS[fieldName] && ACTION_FLAGS[fieldName][v];
+          if (f && flags.indexOf(f) === -1) flags.push(f);
+        });
+      });
+    });
+    return flags;
+  }
+
+  function renderList(items, cls) {
+    if (!items || items.length === 0) return '';
+    return '<ul class="' + cls + '">' + items.map(function(t) { return '<li>' + escapeHtml(t) + '</li>'; }).join('') + '</ul>';
+  }
+
+  function renderEeesGroupsHtml(groups) {
+    var html = '';
+    var hasContent = false;
+    EEES_META.forEach(function(meta) {
+      var items = groups[meta.key];
+      if (!items || items.length === 0) return;
+      hasContent = true;
+      var body = '<div class="eees-policy-note">' + escapeHtml(EEES_POLICY[meta.key]) + '</div>';
+      items.forEach(function(it) {
+        if (it.quote) {
+          var prompts = QUOTE_PROMPTS[meta.key] || [];
+          body += '<div class="quote-box"><span class="quote-box-label">In their own words &mdash; ' + escapeHtml(it.section) + '</span>&ldquo;' + escapeHtml(it.quote).replace(/\n/g, '<br>') + '&rdquo;'
+            + (prompts.length ? '<div class="quote-prompts"><span class="quote-prompts-label">Ways to explore this together:</span>' + renderList(prompts, 'quote-prompts-list') + '</div>' : '')
+            + '</div>';
+        } else {
+          body += '<div class="eees-item">'
+            + '<div class="eees-item-tag">Directly reported</div>'
+            + '<div class="eees-item-reported">' + escapeHtml(it.reported) + '</div>'
+            + '<div class="eees-item-meaning">' + escapeHtml(it.meaning) + '</div>'
+            + (it.questions.length ? '<div class="eees-item-sublabel">💬 Questions to explore together</div>' + renderList(it.questions, 'eees-sublist') : '')
+            + (it.adjustments.length ? '<div class="eees-item-sublabel">🛠️ Adjustments to consider</div>' + renderList(it.adjustments, 'eees-sublist') : '')
+            + '</div>';
+        }
+      });
+      html += '<div class="eees-block">'
+        + '<div class="eees-block-head ' + meta.cls + '"><span>' + meta.icon + '</span><span>' + meta.label + '</span></div>'
+        + '<div class="eees-block-body">' + body + '</div>'
+        + '</div>';
+    });
+    return { html: html, hasContent: hasContent };
+  }
+
+  /* ============================================================
+     REPORT 1 — EMPLOYEE'S OWN COPY (always full, plus sharing summary)
+  ============================================================ */
+  function renderEmployeeReport() {
+    var nameVal = val('f-name'), roleVal = val('f-role'), orgVal = val('f-org');
+    var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    var subhead = '';
+    if (nameVal) subhead += escapeHtml(nameVal);
+    if (roleVal) subhead += (subhead ? ' &bull; ' : '') + escapeHtml(roleVal);
+    if (orgVal)  subhead += (subhead ? ' &bull; ' : '') + escapeHtml(orgVal);
+    document.getElementById('employee-subhead').innerHTML = 'Generated ' + dateStr + (subhead ? '<br>' + subhead : '');
+
+    var html = '';
+
+    html += section('👤', 'About You',
+      row('Name', nameVal) +
+      row('Role', roleVal) +
+      row('Organisation', orgVal) +
+      row('Named contact', val('f-contact-name') ? val('f-contact-name') + (val('f-contact-detail') ? ' • ' + val('f-contact-detail') : '') : '')
+    );
+
+    var sharingRows = '';
+    CONSENT_SECTIONS.forEach(function(sec) {
+      var recips = recipientsForSection(sec.key);
+      sharingRows += '<tr><td>' + sec.icon + ' ' + sec.label + '</td><td>' +
+        (recips.length ? recips.map(function(r) { return '<span class="recipient-pill">' + r + '</span>'; }).join('') : '<span class="recipient-pill none">Not shared</span>')
+        + '</td></tr>';
+    });
+    var methodVal = getRadio('share-method');
+    var methodDisplay = methodVal === 'Other' ? (val('share-method-other-detail') || 'Other (not specified)') : methodVal;
+    html += section('🔒', 'Your Sharing Choices',
+      '<table class="sharing-summary-table"><thead><tr><th>Area</th><th>Shared with</th></tr></thead><tbody>' + sharingRows + '</tbody></table>'
+      + (methodDisplay ? '<div style="margin-top:14px">' + row("How you'd like it shared", methodDisplay) + '</div>' : '')
+    );
+
+    html += section('🏢', 'Working Environment',
+      row('Works best in', getChecked('work-location')) +
+      row('Environmental and sensory factors', getChecked('env-sensory')) +
+      row('Additional notes', val('env-other'))
+    );
+
+    html += section('💻', 'Equipment and Technology',
+      row('Useful or needed equipment', getChecked('equipment')) +
+      row('Assistive technology or software', getChecked('software')) +
+      row('Information about software wanted', getRadio('software-info')) +
+      row('Additional notes', val('equipment-other'))
+    );
+
+    html += section('🚌', 'Getting To and From Work',
+      row('Travel support needed', getChecked('travel')) +
+      row('Building access needed', getChecked('access')) +
+      row('Additional notes', val('travel-other'))
+    );
+
+    html += section('💬', 'Communication and Interaction',
+      row('Preferred way to receive information', getChecked('info-receive')) +
+      row('Communication style', getChecked('comm-style')) +
+      row('Interview or assessment adjustments', getChecked('interview')) +
+      row('Additional notes', val('comm-other'))
+    );
+
+    html += section('📋', 'Planning, Organisation and Workload',
+      row('What helps manage workload', getChecked('workload')) +
+      row('Areas that are particularly difficult', getChecked('exec-difficulty')) +
+      row('Additional notes', val('workload-other'))
+    );
+
+    var variesVal = getRadio('varies');
+    html += section('🌱', 'Wellbeing and In-Work Support',
+      row('Factors that affect work experience', getChecked('wellbeing')) +
+      row('In-work support that would help', getChecked('in-work-support')) +
+      row('Does situation vary?', variesVal) +
+      (variesVal === 'Yes' || variesVal === 'Somewhat' ? row('How it varies', val('varies-detail')) : '') +
+      row('Additional notes', val('wellbeing-other'))
+    );
+
+    html += section('✅', 'Priorities and Next Steps',
+      row('Top three priorities', val('top-three')) +
+      row('Previous support that helped', val('prev-support')) +
+      row('Already shared with', getChecked('shared-with')) +
+      row('Intended use of this passport', getChecked('passport-use')) +
+      row('Additional notes', val('add-notes'))
+    );
+
+    document.getElementById('employee-report-body').innerHTML = html;
+  }
+
+  /* ============================================================
+     REPORT 2 — MANAGER / TEAM LEADER CONVERSATION GUIDE
+  ============================================================ */
+  function renderManagerReport() {
+    var nameVal = val('f-name'), roleVal = val('f-role');
+    var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    var who = nameVal ? escapeHtml(nameVal) : 'This employee';
+    document.getElementById('manager-subhead').innerHTML = 'Prepared ' + dateStr + (nameVal ? '<br>For discussing support with ' + who + (roleVal ? ' (' + escapeHtml(roleVal) + ')' : '') : '');
+
+    var html = '';
+    html += '<div class="report-framework-note"><strong>How to read this report:</strong> ' + who + ' has organised what helps them work well using the EEES framework, Executive Function, Emotional Regulation, Environment and Sensory, the four areas that tend to shape how anyone performs at their best. Each item below is something ' + who + ' told us directly, translated using Which Means What into what it might mean, questions worth asking together, and adjustments worth considering. This is not a diagnosis or clinical assessment. You do not need to know why something helps, only that it does.</div>';
+    html += '<div class="report-framework-note policy">' + LEGAL_NOTE + '</div>';
+
+    if (isShared('priorities', 'manager') && val('top-three')) {
+      html += '<div class="priority-callout"><div class="priority-callout-label">In ' + who + "'s own words &mdash; what matters most</div><p>" + escapeHtml(val('top-three')) + '</p></div>';
+    }
+
+    var groups = buildEeesEntries('manager');
+    var rendered = renderEeesGroupsHtml(groups);
+
+    if (rendered.hasContent) {
+      html += rendered.html;
+      var notShared = CONSENT_SECTIONS.filter(function(s) { return s.key !== 'priorities' && !isShared(s.key, 'manager'); });
+      if (notShared.length) {
+        html += '<div class="not-shared-note">' + who + ' has not shared the following areas with you through this passport: ' + notShared.map(function(s) { return s.label; }).join(', ') + '. That may mean nothing, or it may mean they are discussing it with HR or Occupational Health instead, or keeping it private for now.</div>';
+      }
+    } else {
+      html += '<div class="not-shared-note">' + who + ' has not yet chosen to share specific support needs with you through this passport. It may be worth checking in directly, or asking if they would like to revisit their sharing choices.</div>';
+    }
+
+    document.getElementById('manager-report-body').innerHTML = html;
+  }
+
+  /* ============================================================
+     REPORT 3 — HR SUMMARY
+  ============================================================ */
+  function renderHRReport() {
+    var nameVal = val('f-name'), roleVal = val('f-role');
+    var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    var who = nameVal ? escapeHtml(nameVal) : 'This employee';
+    document.getElementById('hr-subhead').innerHTML = 'Prepared ' + dateStr + (nameVal ? '<br>' + who + (roleVal ? ' (' + escapeHtml(roleVal) + ')' : '') : '');
+
+    var html = '';
+    html += '<div class="report-framework-note"><strong>About this summary:</strong> This brings together what ' + who + ' has chosen to share with HR directly, alongside an overview of what has also been shared with their manager or Occupational Health, so support can be coordinated without duplicating conversations. It uses the same EEES framework and Which Means What translations as the manager report, each with questions to explore and adjustments to consider.</div>';
+
+    var methodVal = getRadio('share-method');
+    if (methodVal === "I'd like HR to share it on my behalf") {
+      html += '<div class="report-framework-note"><strong>Action requested:</strong> ' + who + ' has asked HR to share the relevant sections of this passport with their manager directly.</div>';
+    }
+
+    var overviewRows = '';
+    CONSENT_SECTIONS.forEach(function(sec) {
+      var recips = recipientsForSection(sec.key);
+      overviewRows += '<tr><td>' + sec.icon + ' ' + sec.label + '</td><td>' +
+        (recips.length ? recips.map(function(r) { return '<span class="recipient-pill">' + r + '</span>'; }).join('') : '<span class="recipient-pill none">Not shared</span>')
+        + '</td></tr>';
+    });
+    html += section('🗺️', 'Sharing Overview', '<table class="sharing-summary-table"><thead><tr><th>Area</th><th>Shared with</th></tr></thead><tbody>' + overviewRows + '</tbody></table>');
+
+    if (isShared('priorities', 'hr') && val('top-three')) {
+      html += '<div class="priority-callout"><div class="priority-callout-label">In ' + who + "'s own words</div><p>" + escapeHtml(val('top-three')) + '</p></div>';
+    }
+
+    var flags = buildActionFlags('hr');
+    if (flags.length) {
+      html += section('🚩', 'Possible Actions for HR', '<ul class="flag-list">' + flags.map(function(f) { return '<li>' + escapeHtml(f) + '</li>'; }).join('') + '</ul>');
+    }
+
+    var groups = buildEeesEntries('hr');
+    var rendered = renderEeesGroupsHtml(groups);
+    if (rendered.hasContent) {
+      html += rendered.html;
+    } else {
+      html += '<div class="not-shared-note">' + who + ' has not shared specific support details with HR directly through this passport. The overview above shows what has been shared elsewhere.</div>';
+    }
+
+    document.getElementById('hr-report-body').innerHTML = html;
+  }
+
+  /* ============================================================
+     EMAIL DELIVERY
+     Static HTML/JS cannot send email on its own, there's no SMTP
+     access from a browser. Point EMAIL_WEBHOOK_URL at a service
+     that accepts a POST of { to, subject, html, reportType,
+     employeeName } and sends the email server-side, for example
+     a Zapier "Catch Hook", a Make.com webhook, or a Wix Velo HTTP
+     function. Leave it blank and the tool falls back to mailto:
+     links that open the person's own email app instead, still
+     only offering each recipient the report meant for them.
+  ============================================================ */
+  const EMAIL_WEBHOOK_URL = '';
+
+  const ROLE_META = {
+    employee: { label: 'You', icon: '🗂️' },
+    manager:  { label: 'Manager', icon: '🧭' },
+    hr:       { label: 'HR', icon: '📊' }
+  };
+
+  function getRecipientEmail(role) {
+    if (role === 'employee') return val('f-email');
+    if (role === 'manager') return val('email-manager');
+    if (role === 'hr') return val('email-hr');
+    return '';
+  }
+
+  function recipientHasContent(role) {
+    if (role === 'employee') return true;
+    return CONSENT_SECTIONS.some(function(sec) { return isShared(sec.key, role); });
+  }
+
+  function updateEmailFieldVisibility() {
+    ['manager', 'hr'].forEach(function(r) {
+      var anyShared = CONSENT_SECTIONS.some(function(sec) { return isShared(sec.key, r); });
+      var el = document.getElementById('email-field-' + r);
+      if (el) el.classList.toggle('visible', anyShared);
+    });
+  }
+  document.querySelectorAll('[data-consent]').forEach(function(cb) {
+    cb.addEventListener('change', updateEmailFieldVisibility);
+  });
+
+  function buildReportPayload(role) {
+    var nameVal = val('f-name') || 'An employee';
+    if (role === 'employee') {
+      renderEmployeeReport();
+      return { subject: 'Your Workplace Support Passport', html: document.getElementById('employee-report-body').innerHTML };
+    }
+    if (role === 'manager') {
+      renderManagerReport();
+      return { subject: 'Support Conversation Guide for ' + nameVal, html: document.getElementById('manager-report-body').innerHTML };
+    }
+    if (role === 'hr') {
+      renderHRReport();
+      return { subject: 'HR Summary for ' + nameVal, html: document.getElementById('hr-report-body').innerHTML };
+    }
+    return { subject: 'Workplace Support Passport', html: '' };
+  }
+
+  function wrapEmailHtml(subject, bodyHtml) {
+    return '<div style="font-family:sans-serif;max-width:640px;margin:0 auto;">'
+      + '<h2 style="color:#1a6b6b;font-family:Georgia,serif;">' + escapeHtml(subject) + '</h2>'
+      + bodyHtml
+      + '</div>';
+  }
+
+  function htmlToPlainText(html) {
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    div.querySelectorAll('br').forEach(function(br) { br.replaceWith('\n'); });
+    div.querySelectorAll('div, p, li, tr, .eees-item, .eees-block-head, .quote-box, .results-section-head, .eees-policy-note').forEach(function(el) {
+      el.append('\n');
+    });
+    return div.textContent.replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  function renderSendCard() {
+    var desc = document.getElementById('send-card-desc');
+    var wrap = document.getElementById('send-card-body');
+    if (!desc || !wrap) return;
+
+    desc.textContent = EMAIL_WEBHOOK_URL
+      ? "Each person below is only sent the report meant for them, based on what you've shared. This happens automatically once you generate your reports."
+      : "Automatic sending isn't configured on this copy of the tool. \"Open email\" pre-fills your email app with the right report for that person, ready to send, only for what you've chosen to share with them.";
+
+    var html = '';
+    ['employee', 'manager', 'hr'].forEach(function(role) {
+      if (!recipientHasContent(role)) return;
+      var email = getRecipientEmail(role);
+      var meta = ROLE_META[role];
+      html += '<div class="send-row">'
+        + '<div class="send-row-label">' + meta.icon + ' ' + meta.label + (email ? ' &middot; ' + escapeHtml(email) : ' <span class="send-row-noemail">no email added</span>') + '</div>'
+        + '<button type="button" class="btn btn-secondary btn-small" ' + (email ? 'onclick="sendReportTo(\'' + role + '\')"' : 'disabled') + '>' + (EMAIL_WEBHOOK_URL ? 'Send' : 'Open email') + '</button>'
+        + '<div class="send-status" id="send-status-' + role + '"></div>'
+        + '</div>';
+    });
+    wrap.innerHTML = html || '<p class="consent-intro">Nothing has been shared with anyone yet, so there\'s nothing to send. Go back and add sharing choices, or just open your own copy above.</p>';
+  }
+
+  async function sendReportTo(role) {
+    var email = getRecipientEmail(role);
+    var statusEl = document.getElementById('send-status-' + role);
+    if (!email) {
+      if (statusEl) statusEl.textContent = 'Add an email address for this person first.';
+      return;
+    }
+    var payload = buildReportPayload(role);
+
+    if (EMAIL_WEBHOOK_URL) {
+      if (statusEl) statusEl.textContent = 'Sending…';
+      try {
+        var res = await fetch(EMAIL_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: email,
+            subject: payload.subject,
+            html: wrapEmailHtml(payload.subject, payload.html),
+            reportType: role,
+            employeeName: val('f-name') || ''
+          })
+        });
+        if (statusEl) statusEl.textContent = res.ok ? ('Sent to ' + email + '.') : 'Could not send automatically. Use "Open email" or print instead.';
+      } catch (e) {
+        if (statusEl) statusEl.textContent = 'Could not send automatically (connection error). Use "Open email" or print instead.';
+      }
+    } else {
+      var text = htmlToPlainText(payload.html);
+      var maxLen = 1600;
+      var bodyText = text.length > maxLen ? (text.slice(0, maxLen) + '\n\n… (continued, see the printed PDF for the full report)') : text;
+      var mailto = 'mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent(payload.subject) + '&body=' + encodeURIComponent(bodyText);
+      window.location.href = mailto;
+      if (statusEl) statusEl.textContent = 'Opening your email app…';
+    }
+  }
+
+  /* ============================================================
+     NAVIGATION BETWEEN SELECTOR / REPORTS / FORM
+  ============================================================ */
+  function showReportSelector() {
+    document.getElementById('form-panel').classList.add('hidden');
+    document.getElementById('report-selector-panel').classList.add('visible');
+    renderSendCard();
+    if (EMAIL_WEBHOOK_URL) {
+      ['employee', 'manager', 'hr'].forEach(function(role) {
+        if (recipientHasContent(role) && getRecipientEmail(role)) sendReportTo(role);
+      });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function viewReport(type) {
+    document.getElementById('report-selector-panel').classList.remove('visible');
+    document.querySelectorAll('.report-panel').forEach(function(p) { p.classList.remove('visible'); });
+    if (type === 'employee') {
+      renderEmployeeReport();
+      document.getElementById('employee-report-panel').classList.add('visible');
+    } else if (type === 'manager') {
+      renderManagerReport();
+      document.getElementById('manager-report-panel').classList.add('visible');
+    } else if (type === 'hr') {
+      renderHRReport();
+      document.getElementById('hr-report-panel').classList.add('visible');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function backToSelector() {
+    document.querySelectorAll('.report-panel').forEach(function(p) { p.classList.remove('visible'); });
+    document.getElementById('report-selector-panel').classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function backToForm() {
+    document.getElementById('report-selector-panel').classList.remove('visible');
+    document.getElementById('form-panel').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    if (!confirm('This will clear all your answers and start again. Are you sure?')) return;
+    document.getElementById('report-selector-panel').classList.remove('visible');
+    document.querySelectorAll('.report-panel').forEach(function(p) { p.classList.remove('visible'); });
+    document.getElementById('form-panel').classList.remove('hidden');
+    // Reset all inputs
+    document.querySelectorAll('input[type=text], input[type=email], textarea').forEach(function(el) { el.value = ''; });
+    document.querySelectorAll('input[type=checkbox], input[type=radio]').forEach(function(el) { el.checked = false; });
+    document.querySelectorAll('.check-item').forEach(function(el) { el.classList.remove('checked'); });
+    document.querySelectorAll('.radio-item').forEach(function(el) { el.classList.remove('selected'); });
+    document.querySelectorAll('.conditional').forEach(function(el) { el.classList.remove('visible'); });
+    currentStep = 1;
+    document.querySelectorAll('.step').forEach(function(s, i) { s.classList.toggle('active', i === 0); });
+    updateNav();
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

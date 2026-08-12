@@ -1,0 +1,472 @@
+/* Ported from reference-prototype.html's inline <style>, same class
+   intent, same visual language, restructured as a CSS module scoped to
+   the React components that use it.
+
+   Accessibility pass (per fomr.io/blog/accessible-form-design):
+   - Grouped checkbox/radio questions use <fieldset>/<legend> in the
+     markup, not a floating <label>, so screen readers announce the
+     question once per option instead of not at all. .fieldsetReset
+     strips the browser's default fieldset border/padding so it's
+     visually identical to the old label-above-group layout; .legend
+     is `.label`'s look on a <legend> element.
+   - Every focusable custom control (buttons, checkbox/radio tiles,
+     chips) gets an explicit :focus-visible ring at least as visible as
+     a browser default, so removing a native outline elsewhere (see
+     .textInput/.textArea below) never leaves keyboard users without
+     one. Rings use outline, not just a colour swap, so they don't
+     depend on colour perception alone.
+   - .noneItem no longer drops its border to transparent: a tile
+     boundary that only shows up as a background-colour difference
+     fails the 3:1 non-text contrast minimum for UI components. */
+
+/* Visually hides content while keeping it in the accessibility tree, e.g.
+   supplementary text for the progress bar's role="progressbar". */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.notice {
+  background: var(--teal-lt);
+  border-left: 4px solid var(--teal);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 16px 20px;
+  margin-bottom: 32px;
+  font-size: 0.9rem;
+  color: var(--teal);
+}
+.notice strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.progressWrap {
+  margin-bottom: 32px;
+}
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.progressTrack {
+  height: 6px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.sectionCard {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  animation: fadeSlide 0.3s ease both;
+}
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.sectionIcon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.sectionTitle {
+  font-family: var(--font-dm-serif-display), serif;
+  font-size: 1.25rem;
+  color: var(--teal);
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+.sectionDesc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.stepCount {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: right;
+  margin-bottom: 8px;
+}
+
+.field {
+  margin-bottom: 22px;
+}
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.92rem;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+/* Strips the browser's default fieldset border/margin/padding so a
+   checkbox-group or radio-group question reads identically to a plain
+   .field, while still being a real <fieldset> for assistive tech. */
+.fieldsetReset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+/* Same look as .label, for the <legend> that names a fieldset. */
+.legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-weight: 500;
+  font-size: 0.92rem;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.optionalTag {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 6px;
+  background: #f0f0f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.fieldHint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.textInput,
+.textArea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: var(--white);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  outline: none;
+}
+.textInput:focus,
+.textArea:focus {
+  border-color: var(--teal);
+  /* Replaces the outline removed above: a border-colour change plus a
+     3px ring, together well over the 3:1 non-text contrast minimum,
+     visible in both light and dark rendering since it doesn't depend
+     on the surrounding background. */
+  box-shadow: 0 0 0 3px rgba(26, 107, 107, 0.35);
+}
+.textArea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.checkGroup,
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.checkItem,
+.radioItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  font-size: 0.9rem;
+  user-select: none;
+}
+.checkItem:hover,
+.radioItem:hover {
+  border-color: var(--teal-mid);
+  background: var(--teal-lt);
+}
+/* The checkbox/radio itself is only 18px, easy to lose track of on a
+   tile this size, so the ring goes on the whole tile via :focus-within
+   rather than relying on the input's own native focus indicator. */
+.checkItem:focus-within,
+.radioItem:focus-within {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.checkItem input,
+.radioItem input {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin-top: 1px;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+.checkItemChecked,
+.radioItemSelected {
+  border-color: var(--teal);
+  background: var(--teal-lt);
+}
+/* Kept as a real (if quiet) border rather than transparent: a tile
+   boundary shown only by a background-colour shift doesn't meet the
+   3:1 non-text contrast minimum against the page background. */
+.noneItem {
+  border-color: var(--border);
+  background: #f7f7fa;
+  color: var(--muted);
+}
+
+.conditional {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--teal-lt);
+  border-radius: 8px;
+  border: 1px dashed var(--teal-mid);
+}
+.conditional .label {
+  color: var(--teal);
+}
+
+.navRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  gap: 12px;
+}
+.navRowStart {
+  justify-content: flex-end;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+/* A single outline colour can't clear 3:1 against every button variant
+   (a teal ring is invisible on .btnPrimary's teal fill). A white inner
+   ring plus a dark outer halo works against any fill and against the
+   page background behind .btnSecondary, so one rule covers all three. */
+.btn:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--teal);
+}
+.btnPrimary {
+  background: var(--teal);
+  color: white;
+}
+.btnPrimary:hover {
+  background: #145555;
+}
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btnSecondary {
+  background: transparent;
+  color: var(--teal);
+  border-color: var(--teal);
+}
+.btnSecondary:hover {
+  background: var(--teal-lt);
+}
+.btnAmber {
+  /* var(--amber) with white text is ~3.3:1, short of the 4.5:1 minimum
+     for normal-size text. Darkened here rather than changing the shared
+     --amber token, which stays as-is for borders/accents elsewhere. */
+  background: #9c5a1c;
+  color: white;
+  width: 100%;
+  justify-content: center;
+  padding: 15px;
+  font-size: 1rem;
+}
+.btnAmber:hover {
+  background: #7e4815;
+}
+
+.saveStatus {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: right;
+  min-height: 1em;
+  margin-top: 8px;
+}
+
+/* ---- Sharing / consent table (step 9) ---- */
+.consentIntro {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+.consentQuickrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.chipBtn {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 7px 13px;
+  border-radius: 99px;
+  border: 1.5px solid var(--teal-mid);
+  background: var(--white);
+  color: var(--teal);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.chipBtn:hover {
+  background: var(--teal-lt);
+}
+.chipBtn:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.chipBtnClear {
+  border-color: var(--border);
+  color: var(--muted);
+}
+.consentTableWrap {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+.consentTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+  font-size: 0.85rem;
+}
+.consentTable th,
+.consentTable td {
+  border: 1px solid var(--border);
+  padding: 10px 8px;
+  text-align: center;
+}
+.consentTable th {
+  background: var(--teal-lt);
+  color: var(--teal);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+.consentTable td:first-child,
+.consentTable th:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink);
+}
+.consentTable input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+.consentTable input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.consentHintRow td {
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-style: italic;
+  text-align: left !important;
+  border: none;
+  padding-top: 2px;
+  padding-bottom: 14px;
+}
+
+/* ---- Completion confirmation ---- */
+.confirmation {
+  text-align: center;
+  padding: 32px 24px;
+  background: var(--teal);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  color: white;
+}
+.confirmation h2 {
+  font-family: var(--font-dm-serif-display), serif;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+.confirmation p {
+  /* Full white rather than a reduced opacity: white text at 0.85 opacity
+     over this teal background lands just under the 4.5:1 minimum for
+     normal-size text. */
+  color: white;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .sectionCard {
+    padding: 20px 16px;
+  }
+  .navRow {
+    flex-direction: column-reverse;
+  }
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .consentTable {
+    font-size: 0.78rem;
+  }
+  .consentTable th,
+  .consentTable td {
+    padding: 8px 5px;
+  }
+}

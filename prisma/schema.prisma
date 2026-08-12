@@ -1,0 +1,131 @@
+// Workplace Support Passport — Prisma schema
+//
+// Phase 1 (demo) runs on SQLite; Phase 2 switches the datasource provider to
+// "postgresql" and points DATABASE_URL at the client's own Postgres instance.
+// Nothing in this schema is SQLite-specific: no native enums (SQLite doesn't
+// support them, so allowed values are documented in comments and enforced
+// with zod at the application layer instead), portable cuid() ids, and plain
+// scalar types throughout, so the swap is a provider change, not a rewrite.
+//
+// Table and column names are snake_case (via @@map / @map) to match the data
+// model documented in CLAUDE.md exactly; Prisma Client still exposes the
+// usual camelCase field names in application code.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// A single client organisation's tenant. One deployment = one organisation.
+model Organisation {
+  id                  String  @id @default(cuid())
+  name                String
+  /// Logo, colours, etc. for white-labelling (Phase 2, build step 11).
+  brandingConfig      Json?   @map("branding_config")
+  /// How often a passport should prompt for review, in months.
+  reviewPeriodMonths  Int?    @map("review_period_months")
+
+  users     User[]
+  passports Passport[]
+  auditLog  AuditLog[]
+
+  @@map("organisations")
+}
+
+/// role: "employee" | "manager" | "hr_admin"
+/// Occupational Health is deliberately not a role here, see CLAUDE.md:
+/// it's an external report recipient only, with no login or dashboard.
+model User {
+  id             String  @id @default(cuid())
+  organisationId String  @map("organisation_id")
+  email          String
+  role           String
+  /// SSO subject id from the client's IdP (Phase 2). Null in the Phase 1
+  /// demo, which uses a stand-in login instead of real SSO.
+  ssoSubjectId   String? @map("sso_subject_id")
+
+  organisation      Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  passports         Passport[]   @relation("PassportOwner")
+  auditLogEntries   AuditLog[]   @relation("AuditActor")
+
+  @@unique([organisationId, email])
+  @@map("users")
+}
+
+/// status: "draft" | "complete" | "archived"
+model Passport {
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  organisationId String    @map("organisation_id")
+  status         String    @default("draft")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  lastUpdatedAt  DateTime  @updatedAt @map("last_updated_at")
+  nextReviewDate DateTime? @map("next_review_date")
+
+  user         User               @relation("PassportOwner", fields: [userId], references: [id], onDelete: Cascade)
+  organisation Organisation       @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  responses    PassportResponse[]
+  consent      PassportConsent[]
+  auditLog     AuditLog[]
+
+  @@map("passports")
+}
+
+/// One row per answered field, keyed by the section it belongs to (matching
+/// the 8-section flow in CLAUDE.md) and the field's id in the form (e.g.
+/// "env-other", "work-location"). Saved incrementally as the user progresses
+/// through the flow, not just on final submit.
+model PassportResponse {
+  id         String @id @default(cuid())
+  passportId String @map("passport_id")
+  section    String
+  fieldKey   String @map("field_key")
+  value      Json
+
+  passport Passport @relation(fields: [passportId], references: [id], onDelete: Cascade)
+
+  /// One current answer per field per passport; autosave upserts on this.
+  @@unique([passportId, fieldKey])
+  @@map("passport_responses")
+}
+
+/// Granular sharing consent: per-section x per-recipient, matching the
+/// reference prototype's step 9. Checked on every read, not a blanket flag.
+/// section: one of the 7 content sections that can be shared ("env",
+///   "equipment", "travel", "comm", "workload", "wellbeing", "priorities").
+///   "About You" is not listed here, it's included automatically whenever
+///   any section is shared with that recipient, same as the prototype.
+/// recipient: "manager" | "hr" | "occupational_health"
+model PassportConsent {
+  id         String  @id @default(cuid())
+  passportId String  @map("passport_id")
+  section    String
+  recipient  String
+  shared     Boolean @default(false)
+
+  passport Passport @relation(fields: [passportId], references: [id], onDelete: Cascade)
+
+  @@unique([passportId, section, recipient])
+  @@map("passport_consent")
+}
+
+/// Wired into every passport view/read (Phase 2, build step 8). actorUserId
+/// is who performed the action; targetPassportId is the passport it acted on.
+model AuditLog {
+  id               String   @id @default(cuid())
+  organisationId   String   @map("organisation_id")
+  actorUserId      String   @map("actor_user_id")
+  action           String
+  targetPassportId String   @map("target_passport_id")
+  timestamp        DateTime @default(now())
+
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  actor          User         @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: Cascade)
+  targetPassport Passport     @relation(fields: [targetPassportId], references: [id], onDelete: Cascade)
+
+  @@map("audit_log")
+}
