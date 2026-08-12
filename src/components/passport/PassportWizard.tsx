@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import Link from "next/link";
 import styles from "./passport.module.css";
 import FieldRenderer from "./FieldRenderer";
 import {
@@ -134,11 +135,13 @@ export default function PassportWizard({ passportId, initialAnswers, initialCons
       <div className={styles.confirmation}>
         <h2>Your passport is complete</h2>
         <p>
-          Your answers and sharing choices are saved. Report generation, a printable copy for you and a
-          tailored report for each recipient you have chosen, is built next, so for now this confirms
-          your passport is ready.
+          Your answers and sharing choices are saved. Your own copy, a manager conversation guide and an
+          HR summary have been prepared, each only showing what you have chosen to share.
         </p>
-        <div style={{ marginTop: 20 }}>
+        <div style={{ marginTop: 20, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/reports" className={`${styles.btn} ${styles.btnAmber}`} style={{ width: "auto" }}>
+            View Your Reports →
+          </Link>
           <button
             type="button"
             className={`${styles.btn} ${styles.btnSecondary}`}

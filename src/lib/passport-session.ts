@@ -1,5 +1,7 @@
 import "server-only";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/db";
+import type { RecipientKey } from "@/lib/passport-content";
 
 // No login exists yet, real SSO is Phase 2 build step 7 and even the demo
 // stand-in login is a later step (Phase 1 build step 5, for managers/HR to
@@ -47,4 +49,39 @@ export async function loadPassport(passportId: string) {
     where: { id: passportId },
     include: { responses: true, consent: true },
   });
+}
+
+/** Loads the passport belonging to whichever cookie the current request
+ * carries, or null if there isn't one (no cookie yet, or a stale id).
+ * Shared by every page that needs "my own passport": the wizard and the
+ * report views. Doesn't redirect itself, since the wizard and the report
+ * pages want slightly different fallback behaviour. */
+export async function loadOwnPassport() {
+  const cookieStore = await cookies();
+  const passportId = cookieStore.get(PASSPORT_COOKIE)?.value;
+  return passportId ? loadPassport(passportId) : null;
+}
+
+export type Answers = Record<string, string | string[]>;
+export type ConsentMap = Record<string, Partial<Record<RecipientKey, boolean>>>;
+
+/** Reshapes a loaded passport's flat responses/consent rows (one row per
+ * field, one row per section x recipient) into the key-value maps the
+ * wizard and report builders actually work with. */
+export function toAnswersAndConsent(passport: NonNullable<Awaited<ReturnType<typeof loadPassport>>>): {
+  answers: Answers;
+  consent: ConsentMap;
+} {
+  const answers: Answers = {};
+  for (const response of passport.responses) {
+    answers[response.fieldKey] = response.value as unknown as string | string[];
+  }
+
+  const consent: ConsentMap = {};
+  for (const entry of passport.consent) {
+    const recipient = entry.recipient as RecipientKey;
+    consent[entry.section] = { ...consent[entry.section], [recipient]: entry.shared };
+  }
+
+  return { answers, consent };
 }
