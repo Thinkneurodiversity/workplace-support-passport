@@ -77,6 +77,41 @@ Two phases. Phase 1 gets to something demoable as fast as possible, using simpli
 10. Containerise the app (Dockerfile) and write deployment documentation for a client's IT team to follow.
 11. Add per-organisation branding configuration (logo, colours) so each client's instance can be white-labelled.
 
+## Distribution & Deployment Model
+
+This is licensed software: each client hosts and runs their own instance.
+ThinkNeurodiversity never holds, stores, or has infrastructure-level access to
+any client instance or its data. The only permitted vendor connection is a
+one-way, outbound update channel so security patches and content updates
+(including EEES/Which Means What revisions) can reach the instance without
+requiring client input.
+
+### Core principle
+Code and data stay fully separated. Client servers hold the database and all
+employee data, full stop. The vendor controls only the release/update channel.
+No inbound connection to client infrastructure exists at any point; the
+instance always initiates the connection outward, never the other way round.
+
+### Update mechanism: pull-based auto-update
+- Each instance periodically checks a vendor-controlled version endpoint and
+  pulls a signed release package, verified before applying
+- Both security patches and feature/content updates auto-apply on this
+  schedule. No client approval step, no deferral window, no config to disable
+  it. This is deliberate: it's what keeps every instance in the field patched
+  without needing the client to do anything
+- A minimal heartbeat (instance ID, version, timestamp only, no client or
+  employee data) lets the vendor confirm instances are current. Purely
+  operational, not a compliance or liability mechanism
+
+### What the vendor never has
+- No access to any client database or hosting environment
+- No ability to log in to a client instance
+- No visibility into employee-submitted data
+
+### What the vendor controls
+- The release/update server
+- Versioning, signing, and publishing of releases
+
 ## Design language to carry over
 Teal (#1a6b6b) and amber (#c97c2a) colour palette, DM Serif Display for headings, DM Sans for body text, card-based layout with a progress bar, checkbox groups styled as selectable tiles rather than plain checkboxes. Keep this consistent, it's an established brand.
 
