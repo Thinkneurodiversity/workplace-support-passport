@@ -153,7 +153,10 @@
   white-space: pre-line;
 }
 .resultEmpty {
-  color: #aaa;
+  /* #aaa was only ~2.3:1 against white, short of the 4.5:1 minimum for
+     normal text. --muted already clears it (~6.4:1+) and reads as the
+     same "quiet, italic" placeholder tone. */
+  color: var(--muted);
   font-style: italic;
   font-size: 0.85rem;
 }
@@ -176,7 +179,10 @@
   line-height: 1.55;
 }
 .reportFrameworkNote strong {
-  color: var(--amber);
+  /* Plain --amber here was ~3.0:1 against --amber-lt, short of the
+     4.5:1 minimum (this text is too small to count as "large text").
+     Matches the parent's already-accessible #8a5a1e instead. */
+  color: #8a5a1e;
 }
 .reportFrameworkNotePolicy {
   background: var(--teal-lt);
@@ -405,7 +411,7 @@
 }
 .recipientPillNone {
   background: #f0f0f5;
-  color: #aaa;
+  color: var(--muted);
   font-style: italic;
 }
 

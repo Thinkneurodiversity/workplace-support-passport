@@ -1,0 +1,228 @@
+/* Manager/HR admin view (build step 4): the role-picker landing, the shared
+   passports list, and the aggregate themes section. Same visual language as
+   passport.module.css / reports.module.css, kept in its own module since
+   none of these layouts (role grid, passport list card, theme bars) are
+   shared with the employee-facing pages. */
+
+.sectionTitle {
+  font-family: var(--font-dm-serif-display), serif;
+  font-size: 1.3rem;
+  color: var(--teal);
+  margin: 32px 0 6px;
+}
+.sectionHint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.emptyState {
+  background: var(--white);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+/* Role-picker landing */
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
+  transition: border-color 0.15s ease;
+}
+.roleCard:hover {
+  border-color: var(--teal);
+}
+.roleCard:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.roleCardIcon {
+  font-size: 1.7rem;
+}
+.roleCardTitle {
+  font-family: var(--font-dm-serif-display), serif;
+  font-size: 1.15rem;
+  color: var(--teal);
+}
+.roleCardCount {
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+/* Shared passports list */
+.passportList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.passportCard {
+  display: block;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 22px;
+  transition: border-color 0.15s ease;
+}
+.passportCard:hover {
+  border-color: var(--teal);
+}
+.passportCard:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.passportCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.passportName {
+  font-family: var(--font-dm-serif-display), serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.passportRole {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.statusBadge {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+.statusComplete {
+  background: var(--teal-lt);
+  color: var(--teal);
+}
+.statusDraft {
+  background: var(--amber-lt);
+  color: #8a5a1e;
+}
+.passportSections {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sectionPill {
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: var(--teal-lt);
+  color: var(--teal);
+}
+.passportUpdated {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Aggregate themes */
+.themeSection {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.themeSectionHead {
+  background: var(--teal-lt);
+  padding: 14px 20px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.themeField {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f5;
+}
+.themeField:last-child {
+  border-bottom: none;
+}
+.themeFieldLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.themeFieldMeta {
+  flex-shrink: 0;
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.themeBarRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(80px, 2fr) 24px;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 0.82rem;
+}
+.themeBarLabel {
+  color: var(--ink);
+}
+.themeBarTrack {
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.themeBarFill {
+  height: 100%;
+  /* Plain --amber against .themeBarTrack's --border was only ~2.4:1,
+     short of the 3:1 minimum for a graphical element the data depends
+     on. Same darkened amber already used for .btnAmber elsewhere. */
+  background: #9c5a1c;
+  border-radius: 99px;
+}
+.themeBarCount {
+  text-align: right;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.pageActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .themeBarRow {
+    grid-template-columns: minmax(100px, 1fr) minmax(60px, 1.6fr) 20px;
+  }
+}

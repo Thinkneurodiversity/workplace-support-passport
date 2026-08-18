@@ -8,6 +8,12 @@
   --ink: #1a1a2e;
   --muted: #5a5a72;
   --border: #d0dede;
+  /* Only ~1.4:1 against white/--bg, fine for plain decorative dividers
+     (card outlines already backed by --shadow, table gridlines) but not
+     enough for a boundary that's the sole cue an element is interactive.
+     --border-strong (~4.8:1) is for those: text inputs, checkbox/radio
+     tiles, the "none of these" tile, outline-style buttons. */
+  --border-strong: #6b7280;
   --bg: #f7fafa;
   --white: #ffffff;
   --amber: #c97c2a;

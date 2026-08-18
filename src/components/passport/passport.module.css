@@ -17,7 +17,12 @@
      depend on colour perception alone.
    - .noneItem no longer drops its border to transparent: a tile
      boundary that only shows up as a background-colour difference
-     fails the 3:1 non-text contrast minimum for UI components. */
+     fails the 3:1 non-text contrast minimum for UI components.
+   - Interactive control borders (.textInput/.textArea, .checkItem/
+     .radioItem, .noneItem, .chipBtnClear) use --border-strong, not
+     --border: --border alone is only ~1.4:1 against white, fine for a
+     decorative divider but not enough for a boundary that's the only
+     cue an element is interactive. See globals.css for the full audit. */
 
 /* Visually hides content while keeping it in the accessibility tree, e.g.
    supplementary text for the progress bar's role="progressbar". */
@@ -177,7 +182,7 @@
 .textArea {
   width: 100%;
   padding: 11px 14px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--border-strong);
   border-radius: 8px;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.92rem;
@@ -216,7 +221,7 @@
   cursor: pointer;
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--border-strong);
   transition:
     border-color 0.15s,
     background 0.15s;
@@ -252,9 +257,10 @@
 }
 /* Kept as a real (if quiet) border rather than transparent: a tile
    boundary shown only by a background-colour shift doesn't meet the
-   3:1 non-text contrast minimum against the page background. */
+   3:1 non-text contrast minimum against the page background. Uses
+   --border-strong, not --border, for the same reason. */
 .noneItem {
-  border-color: var(--border);
+  border-color: var(--border-strong);
   background: #f7f7fa;
   color: var(--muted);
 }
@@ -378,7 +384,7 @@
   outline-offset: 2px;
 }
 .chipBtnClear {
-  border-color: var(--border);
+  border-color: var(--border-strong);
   color: var(--muted);
 }
 .consentTableWrap {
