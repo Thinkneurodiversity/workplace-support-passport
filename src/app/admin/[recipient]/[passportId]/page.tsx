@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import passportStyles from "@/components/passport/passport.module.css";
 import reportStyles from "@/components/passport/reports.module.css";
+import adminStyles from "@/components/passport/admin.module.css";
 import { HrReportBody, ManagerReportBody } from "@/components/passport/ReportViews";
 import { adminRecipientLabel, isAdminRecipient, loadSharedPassport, type AdminRecipient } from "@/lib/admin-data";
+import { getAdminSessionUser, recipientForRole } from "@/lib/admin-session";
 import { hrHeaderLines, managerHeaderLines } from "@/lib/report-content";
+import LogoutButton from "../../LogoutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +25,11 @@ export default async function AdminPassportPage({
   const recipient: AdminRecipient = recipientParam;
   const label = adminRecipientLabel(recipient);
 
-  const record = await loadSharedPassport(passportId, recipient);
+  const user = await getAdminSessionUser();
+  if (!user) redirect("/admin/login");
+  if (recipientForRole(user.role) !== recipient) redirect("/admin");
+
+  const record = await loadSharedPassport(passportId, recipient, user.organisationId);
   if (!record) notFound();
 
   const { answers, consent, name } = record;
@@ -37,6 +44,11 @@ export default async function AdminPassportPage({
         </p>
       </header>
       <div className="container">
+        <div className={adminStyles.adminTopBar}>
+          <span>Signed in as {user.email}</span>
+          <LogoutButton />
+        </div>
+
         <div className={reportStyles.resultsHeader}>
           <h2>{recipient === "manager" ? "Support Conversation Guide" : "HR Summary"}</h2>
           {headerLines.map((line, i) => (

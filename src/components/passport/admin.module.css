@@ -221,6 +221,60 @@
   flex-wrap: wrap;
 }
 
+/* Sign-in page */
+.credentialsBox {
+  background: var(--white);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.credentialsBox div {
+  margin-bottom: 4px;
+}
+.credentialsBox div:last-child {
+  margin-bottom: 0;
+}
+.loginCard {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 24px;
+  border: 1px solid var(--border);
+  max-width: 420px;
+  margin: 0 auto;
+}
+.formError {
+  color: var(--red);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+.adminTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.adminTopBar button {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.85rem;
+  color: var(--teal);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.adminTopBar button:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
 @media (max-width: 480px) {
   .themeBarRow {
     grid-template-columns: minmax(100px, 1fr) minmax(60px, 1.6fr) 20px;

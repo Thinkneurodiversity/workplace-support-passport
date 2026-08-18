@@ -47,13 +47,35 @@ model User {
   /// SSO subject id from the client's IdP (Phase 2). Null in the Phase 1
   /// demo, which uses a stand-in login instead of real SSO.
   ssoSubjectId   String? @map("sso_subject_id")
+  /// Salted scrypt hash, only ever set for manager/hr_admin demo accounts
+  /// signing into the admin view (Phase 1 build step 5). Null for the
+  /// anonymous employee users passport-session.ts creates per browser,
+  /// and for every account once Phase 2 replaces this with real SSO.
+  passwordHash   String? @map("password_hash")
 
-  organisation      Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  passports         Passport[]   @relation("PassportOwner")
-  auditLogEntries   AuditLog[]   @relation("AuditActor")
+  organisation      Organisation   @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  passports         Passport[]     @relation("PassportOwner")
+  auditLogEntries   AuditLog[]     @relation("AuditActor")
+  adminSessions     AdminSession[]
 
   @@unique([organisationId, email])
   @@map("users")
+}
+
+/// Demo stand-in session for the manager/HR admin login (Phase 1 build
+/// step 5), replaced by whatever session strategy comes with real SSO in
+/// Phase 2. The cookie holds nothing but this row's own id, an unguessable
+/// cuid, so it carries no information on its own if intercepted, unlike a
+/// cookie that stored the user id directly.
+model AdminSession {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_sessions")
 }
 
 /// status: "draft" | "complete" | "archived"

@@ -24,15 +24,6 @@ export function adminRecipientLabel(recipient: AdminRecipient): string {
   return ADMIN_RECIPIENT_LABELS[recipient];
 }
 
-/** No login exists yet, real sign-in that resolves a manager/HR user to
- * their own organisation is Phase 1 build step 5. Until then this assumes
- * the single demo organisation, same simplification passport-session.ts
- * makes for the employee side. */
-async function getDemoOrganisationId(): Promise<string | null> {
-  const organisation = await prisma.organisation.findFirst();
-  return organisation?.id ?? null;
-}
-
 export interface SharedPassportSummary {
   id: string;
   name: string;
@@ -43,13 +34,14 @@ export interface SharedPassportSummary {
 }
 
 /** Passports with at least one section shared with `recipient`, most
- * recently updated first. Consent is checked per-section here, same rule
- * as every other read in the app, a passport only appears because specific
- * sections were shared, not because it exists. */
-export async function listSharedPassports(recipient: AdminRecipient): Promise<SharedPassportSummary[]> {
-  const organisationId = await getDemoOrganisationId();
-  if (!organisationId) return [];
-
+ * recently updated first, scoped to the signed-in manager/HR user's own
+ * organisation. Consent is checked per-section here, same rule as every
+ * other read in the app, a passport only appears because specific sections
+ * were shared, not because it exists. */
+export async function listSharedPassports(
+  recipient: AdminRecipient,
+  organisationId: string,
+): Promise<SharedPassportSummary[]> {
   const passports = await prisma.passport.findMany({
     where: { organisationId, consent: { some: { recipient, shared: true } } },
     include: { responses: true, consent: true },
@@ -78,17 +70,23 @@ export interface SharedPassportRecord {
 
 /** Loads one passport for admin viewing, no ownership cookie check, this is
  * a read on someone else's passport by design, unlike passport-actions.ts's
- * assertOwnsPassport. Real access control (only this org's managers/HR, and
- * only for passports actually shared with their role) arrives with the
- * login in the next build step. Returns null if the passport doesn't exist
- * or has shared nothing at all with this recipient, so a guessed id can't
- * be used to browse passports that were never shared. */
-export async function loadSharedPassport(passportId: string, recipient: AdminRecipient): Promise<SharedPassportRecord | null> {
+ * assertOwnsPassport. Access control here has two independent gates: the
+ * passport must belong to the caller's own organisation (the non-negotiable
+ * boundary in CLAUDE.md, checked even though today's demo only ever has one
+ * organisation), and it must have actually shared something with
+ * `recipient`. Returns null if either fails, or the passport doesn't exist,
+ * so a guessed id can't be used to browse passports that were never shared
+ * or that belong to someone else's organisation. */
+export async function loadSharedPassport(
+  passportId: string,
+  recipient: AdminRecipient,
+  organisationId: string,
+): Promise<SharedPassportRecord | null> {
   const passport = await prisma.passport.findUnique({
     where: { id: passportId },
     include: { responses: true, consent: true },
   });
-  if (!passport) return null;
+  if (!passport || passport.organisationId !== organisationId) return null;
 
   const { answers, consent } = toAnswersAndConsent(passport);
   const hasAnyShare = CONSENT_SECTIONS.some((s) => consent[s.key]?.[recipient]);
@@ -121,10 +119,10 @@ export interface AggregateSection {
  * reporting rule, only checkbox fields do. A field only counts respondents
  * who both answered it and shared the section it lives in, matching the
  * per-section consent check every other read in the app makes. */
-export async function buildAggregateThemes(recipient: AdminRecipient): Promise<AggregateSection[]> {
-  const organisationId = await getDemoOrganisationId();
-  if (!organisationId) return [];
-
+export async function buildAggregateThemes(
+  recipient: AdminRecipient,
+  organisationId: string,
+): Promise<AggregateSection[]> {
   const passports = await prisma.passport.findMany({
     where: { organisationId, consent: { some: { recipient, shared: true } } },
     include: { responses: true, consent: true },

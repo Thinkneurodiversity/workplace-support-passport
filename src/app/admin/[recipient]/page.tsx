@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import passportStyles from "@/components/passport/passport.module.css";
+import { notFound, redirect } from "next/navigation";
 import styles from "@/components/passport/admin.module.css";
 import {
   adminRecipientLabel,
@@ -9,6 +8,8 @@ import {
   listSharedPassports,
   type AdminRecipient,
 } from "@/lib/admin-data";
+import { getAdminSessionUser, recipientForRole } from "@/lib/admin-session";
+import LogoutButton from "../LogoutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,16 @@ export default async function AdminRecipientPage({ params }: { params: Promise<{
   const recipient: AdminRecipient = recipientParam;
   const label = adminRecipientLabel(recipient);
 
-  const [passports, themes] = await Promise.all([listSharedPassports(recipient), buildAggregateThemes(recipient)]);
+  const user = await getAdminSessionUser();
+  if (!user) redirect("/admin/login");
+  // A manager account can't browse into the HR view by editing the URL, and
+  // vice versa, each role only ever sees its own recipient view.
+  if (recipientForRole(user.role) !== recipient) redirect("/admin");
+
+  const [passports, themes] = await Promise.all([
+    listSharedPassports(recipient, user.organisationId),
+    buildAggregateThemes(recipient, user.organisationId),
+  ]);
 
   return (
     <>
@@ -27,9 +37,9 @@ export default async function AdminRecipientPage({ params }: { params: Promise<{
         <p>Passports shared with {label}, and the themes coming through across the team.</p>
       </header>
       <div className="container">
-        <div className={passportStyles.notice}>
-          <strong>Demo stand-in</strong>
-          This view is not yet behind a sign-in, see the build order in CLAUDE.md for the real thing.
+        <div className={styles.adminTopBar}>
+          <span>Signed in as {user.email}</span>
+          <LogoutButton />
         </div>
 
         <section>
@@ -112,12 +122,6 @@ export default async function AdminRecipientPage({ params }: { params: Promise<{
             ))
           )}
         </section>
-
-        <div className={styles.pageActions}>
-          <Link href="/admin" className={`${passportStyles.btn} ${passportStyles.btnSecondary}`}>
-            ← Choose a different role
-          </Link>
-        </div>
       </div>
     </>
   );

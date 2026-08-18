@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import PassportWizard from "@/components/passport/PassportWizard";
 import { loadOwnPassport, toAnswersAndConsent } from "@/lib/passport-session";
 
@@ -27,6 +28,9 @@ export default async function Home() {
       </header>
       <div className="container">
         <PassportWizard passportId={passport.id} initialAnswers={answers} initialConsent={consent} />
+        <div className="footer-link-row">
+          <Link href="/admin/login">Manager or HR? Sign in to view shared passports</Link>
+        </div>
       </div>
     </>
   );
